@@ -12,5 +12,5 @@ open:
 	xdg-open $(DOCNAME).pdf
 
 clean:
-	rm *.blg *.bbl *.aux *.log *.out *.lua *.in
+	rm *.blg *.bbl *.aux *.log *.out *.lua *.in *.lof *.lot *.toc
 	rm -r _markdown_paper
