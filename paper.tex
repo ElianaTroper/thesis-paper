@@ -46,9 +46,7 @@
 
 \fulltitle{Peering Through Censorship: Tackling Internet Censorship Using P2P Networking}
 
-% TODO: Update this
-\indexwords{Word~processing, Computer~typesetting, Computer~graphics,
-            Style~sheets, Typography, Dissertations, Theses~(academic)}
+\indexwords{[TODO], Theses~(academic)}
 
 \dean{Alexander Sens}
 
@@ -138,7 +136,13 @@ TODO
 
 \subsection{Origination of censorship circumvention}
 
-TODO
+The web arose in a relatively haphazard fashion [TODO: discuss a bit more]. The web was not a place where adversaries engaged in censorship (if they paid any mind to the web whatsoever). Instead, as the web became more prominent and more global, individuals realized that they could be tracked, and that they desired anonymity. This led to the development of anonymity software, with Tor being the most prominent example. Censorship circumvention arose as a by-product of goals that were not focused on censorship circumvention. As primitive censorship began (e.g. blocking specific IP addresses of an undesired server), people realized that software that proxies traffic (either in a basic fashion such as a proxy, or a more complex fashion such as Tor) could be used to access services that would otherwise be blocked on a local network.
+
+As this occurred, the web continued to grow in prominence, and the concept of "Web 2.0" arose - regular users could post content to sites such as message boards and social media sites. People could organize quickly and effectively across larger distances and with people they had never met in the past. Governments took notice. These sites began being blocked by these sites. Governments and other entities also saw that users were getting around these blocks by using proxies and anonymity software - and so they gathered the IP addresses of these services and blocked them.
+
+At this point, those who used and built the anonymity software recognized that censorship circumvention would be crucial for maintaining access to these tools, and others realized that censorship circumvention in-and-of itself would be useful. This effectively led to the rise of a subdiscipline that draws heavily from networking, security, and even game theory, but also exists independently from those subdisciplines, with a variety of stakeholders including governments, NGOs, non-profits, independent programmers, academics, and others interested in developing censorship circumvention techniques. This also leads to a relatively unique feature of this discipline - some techniques were developped in academia, some techniques were developped in the real world, and some were developped in both, and ignoring the results from either thread of research and observation can lead to the development of limited systems.
+
+[TODO: Mention Tor PTs independently of specific methods]
 
 \section{Prior techniques}
 
@@ -153,6 +157,8 @@ TODO
 \subsubsection{OBFS and Scramblesuit}
 
 TODO
+
+[TODO: Others]
 
 \subsection{[P2P and P2P-like]}
 
@@ -234,7 +240,13 @@ We see that existing systems are limited by at least one of the following:
   \item Low bandwidth
 \end{itemize}
 
+Another key observation is that \emph{collateral damage} is the bedrock of the theory behind a circumvention system - as such, any system must be based around maximizing this - the ideal system will make the only feasible way to shut down the system effectively shutting down a large portion of internet traffic. 
+
+[TODO: Discuss false positives + the overhead of blocking traffic]
+
 [TODO: More]
+
+We also note that existing systems require a user to download and use specialized software, and that systems usually require using anonymity software such as Tor to reap the benefits of censorship circuvmention. While anonymity is a useful [thing] to have in some circumstances on the web, getting the drawbacks of common anonymity software [TODO: outline] is not ideal.
 
 \section{Implementation}
 
