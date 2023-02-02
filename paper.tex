@@ -12,6 +12,7 @@
 \usepackage{amssymb}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{svg}
 
 % If there are any other \usepackage commands, put them here.
 
@@ -100,7 +101,26 @@ We then conclude and offer some opportunities for future work.
 
 \chapter{Background}
 
-The term censorship has taken on a life of it's own in the modern social and political context. We are \emph{not} exploring the general connotation of censorship, rather, we are exploring a specific type of censorship that existing in a networking (particularly internetworking) context.
+The term censorship has taken on a life of it's own in the modern social and political context. We are \emph{not} exploring the general connotation of censorship, rather, we are exploring a specific type of censorship that existing in a networking (particularly internetworking) context. We will explore some key concepts and present a short model of networking.
+
+\section{Networking concepts}
+
+We are going to consider the internet as it currently exists, rather than historical states of the internet. Some key concepts:
+
+\begin{itemize}
+  \item Internet Protocol (IP) addresses: These are used to represent endpoints of a connection, and are used for routing. Within a network, other identifiers, such as MAC addresses, are used for routing, however, we are focused on routing between networks and will only consider IP based routing as we explore censorship circumvention. We will use IPv4 addresses throughout as sample addresses, though conceptually IPv6 addresses function similarly for the focuses of this paper.
+  \item Domain Name System (DNS): DNS resolution is used to map from human-readable and memorizable addresses that map to IP addresses (e.g. georgetown.edu resolved to 23.185.0.2 at the time of writing). [TODO: Explore the transparency of these, DNSSEC, etc]
+  \item Router: Routers perform routing for networking, as well as other functions that act on network traffic. They may be the home of a NAT, a firewall, or censorship software. The controller of a router may access and manipulate any traffic which passes through it.
+  \item Firewalls: These are software that may restrict traffic based on rules. These rules may be simple or complex. These have positive uses, such as securing a network from attacks.
+  \item Network address translation (NAT): A NAT is used to map network addresses seen on one side of a router to those seen on the other side of a router. These are frequently used to house potentially thousands of devices behind a single internet facing IP address. Most humans use devices located behind a NAT.
+\end{itemize}
+
+\begin{figure}
+\begin{center}
+{\includesvg{figures/networking}}
+\end{center}
+\caption{A model of networking, sufficient for exploring censorship circumvention [TODO: Add final arrows, some sample traffic]}
+\end{figure}
 
 \section{What is censorship circumvention?}
 
@@ -128,25 +148,58 @@ We assume our adversary has some interest in the utility of the internet and cer
 
 Finally, we note that any technique that subverts this adversary will also work when weakening the strength of these assumptions - e.g. if the adversary controls one nation instead of several, we have more area to run a circumvention system from; if the adversary is only willing to take actions at service providers and not on-the-wire, anything that can thwart an adversary that takes both actions could trivially thwart the adversary that only performs actions at one. We also note that a system could detect the type of actions an adversary is taking and maximize performance based upon what subset of possible actions an adversary is taking - e.g. an adversary that is not touching services leaves an easy path for a circumvention system to use - those services themself.
 
-\subsection{Origination of censorship circumvention}
+[TODO: Basic model + adversary]
 
-The web arose in a relatively haphazard fashion [TODO: discuss a bit more]. The web was not a place where adversaries engaged in censorship (if they paid any mind to the web whatsoever). Instead, as the web became more prominent and more global, individuals realized that they could be tracked, and that they desired anonymity. This led to the development of anonymity software, with Tor being the most prominent example. Censorship circumvention arose as a by-product of goals that were not focused on censorship circumvention. As primitive censorship began (e.g. blocking specific IP addresses of an undesired server), people realized that software that proxies traffic (either in a basic fashion such as a proxy, or a more complex fashion such as Tor) could be used to access services that would otherwise be blocked on a local network.
+\begin{figure}
+\begin{center}
+{\includesvg{figures/networking}}
+\end{center}
+\caption{A model of networking, with our adversary model overlaid [TODO: Once networking diagram is finalized, add an adversary]}
+\end{figure}
 
-As this occurred, the web continued to grow in prominence, and the concept of "Web 2.0" arose - regular users could post content to sites such as message boards and social media sites. People could organize quickly and effectively across larger distances and with people they had never met in the past. Governments took notice. These sites began being blocked by these sites. Governments and other entities also saw that users were getting around these blocks by using proxies and anonymity software - and so they gathered the IP addresses of these services and blocked them.
+\subsection{History and basics}
 
-At this point, those who used and built the anonymity software recognized that censorship circumvention would be crucial for maintaining access to these tools, and others realized that censorship circumvention in-and-of itself would be useful. This effectively led to the rise of a subdiscipline that draws heavily from networking, security, and even game theory, but also exists independently from those subdisciplines, with a variety of stakeholders including governments, NGOs, non-profits, independent programmers, academics, and others interested in developing censorship circumvention techniques. This also leads to a relatively unique feature of this discipline - some techniques were developped in academia, some techniques were developped in the real world, and some were developped in both, and ignoring the results from either thread of research and observation can lead to the development of limited systems.
+The web arose in a relatively haphazard fashion [TODO: discuss a bit more]. The web was not a place where adversaries engaged in censorship (if they paid any mind to the web whatsoever). Instead, as the web became more prominent and more global, individuals realized that they could be tracked, and that they desired anonymity. This led to the development of basic and advanced anonymity software, with proxying being a basic tool for this and Tor being the most prominent example of full fledged anonymity software.
 
-[TODO: Mention Tor PTs independently of specific methods]
+As this occurred, the web continued to grow in prominence, and the concept of "Web 2.0" arose - regular users could post content to sites such as message boards and social media sites. People could organize quickly and effectively across larger distances and with people they had never met in the past. Governments took notice - and censorship began.\footnote{The main justifications censors employ are maintaining law and order, preventing the spread of disinformation, preventing access to "unwholesome" content, or economic protectionism. [TODO: Would be cool to cite one or several instances of these justifications coming from the horses mouth]}
+
+When internet censorship arose, basic techniques were used. These include:
+\begin{itemize}
+  \item Blocking specific IPs: Traffic to or from various IP addresses could be dropped. This is simple and low cost.
+  \item Blocking DNS resolution: DNS resolution traffic for specific requests could be dropped (or replaced). This is simple and low cost. [TODO: address DNS encryption and authentication]
+  \item Legal mechanisms: If a service exists within the area an adversary controls, they could simply take down the service itself. Since we define the adversary to not control the whole world, we will ignore this form of censorship throughout this paper, as a restricted service could avoid this by relocating out of the sphere of influence of an adversary.
+\end{itemize}
+These techniques are sufficient to cut off access to services for users who are either unaware of a censor, unaware that circumvention is possible, users who do not care about the actions of a censor, or out of laziness. A user would have to actively use something that circumvents these simple blocks. The solution to avoid IP blocking and censoring DNS results is to proxy a users raw traffic outside of a censored area (either through a basic proxy, or something that provides other features, such as Tor). From the view of a censor, a user would not be accessing a restricted service, they would be accessing a proxy service.
+
+\begin{figure}
+\begin{center}
+{\includesvg{figures/networking}}
+\end{center}
+\caption{A model of networking, with our adversary performing basic censorship [TODO: Once networking diagram is finalized, show blocking]}
+\end{figure}
+
+Censorship circumvention arose as a by-product of tools made for purposes that were not focused on censorship circumvention. As primitive censorship began, people realized that anonymity software such as Tor or even a basic proxy could be used to access services that would otherwise be blocked. The entrances to these proxy services and Tor were accessed via well known IP addresses or DNS names.\footnote{The reason these were well known is that, if you want the public to access your service, they must know how to access these services, including the addresses of your service. These must be made public to allow people to access your service. A censor has access to public information.} Censors began being blocking access to these services, in additon to their original censorship targets. This set off a "censorship arms race."
+
+At this point, those who used and built the anonymity software recognized that censorship circumvention would be crucial for maintaining access to these tools, and others realized that censorship circumvention in-and-of itself would be useful. This effectively led to the rise of a subdiscipline that draws heavily from networking, security, and even game theory, but also exists independently from those subdisciplines, with a variety of stakeholders including governments, NGOs, non-profits, independent programmers, academics, and others interested in developing censorship circumvention techniques. This also leads to a relatively unique feature of this discipline - some techniques were developped in academia, some techniques were developped in the real world, and some were developped in both, and ignoring the results from either thread of research and observation can lead to the development of flawed systems.
 
 \subsection{Current theory of censorship circumvention}
 
-TODO
+Present censorship circumvention is currently built on two techniques: proxying traffic \emph{out} of the adversaries sphere of influence, and providing access to those proxies. If you can provide access to a proxy, then using existing proxying technology is trivial. The majority of censorship circumvention theory is focused on providing access to proxies.
+
+The bedrock of the theory underlying succesful provision of access to proxies is collateral damage. We begin with a basic model - an adversary will engage in the censorship of service $x$ if $b_x - c_x > 0$, where $b_x$ is the benefit of engaging in censorship of service $x$ and $c_x$ is the cost of engaging in censorship of service $x$. We will refine this formula by switching to a focus on censorship techniques - $(b_x1 + b_x2 + ... + b_xn) - c_x > 0$, where $b_xn$ is the benefit of censoring service $n$ using method $x$, and $c_x$ is the cost of engaging in censorship method $x$. A censor will engage in any censorhip method where the benefit reaped by censoring \emph{any} desired services using that mathod is greater than 0.
+
+We now note that each method may only stop a fraction of users accessing a service using a method - so a more realistic formulation would be $(u_x1*b_x1 + u_x1*b_x2 + ... + u_xn*b_xn) - c_x > 0$, where $u_xn$ is the fraction of users accessing a service are blocked from accessing service $n$ using method $x$.
+
+We will now break down cost further. $c_x = f_x + m_x$ - where $f_x$ is the fixed cost of setting up method $x$ and $m_x$ is the marginal cost of actively engaging in $x$. We will drop $f_x$ from further consideration - the cost of setting up a method is a one time cost, and to an adversary with unlimited resources, expending a one time cost costs $0$ over the long run. We will now explore the marginal cost of $x$. Censorship 
+
 
 [TODO: Mention parrot is dead]
 
 \section{Prior techniques}
 
 TODO
+
+[TODO: Mention Tor PTs independently of specific methods]
 
 [TODO: Do mention some things like shadowsocks that are in use but are even further from academics]
 
