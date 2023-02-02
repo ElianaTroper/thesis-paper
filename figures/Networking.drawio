@@ -1,0 +1,72 @@
+<mxfile host="app.diagrams.net" modified="2023-02-02T17:01:50.213Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36" etag="Vi7-aTy_732-NkRex2v0" version="20.8.15" type="github">
+  <diagram name="Page-1" id="aOqY3RQtG3yumGvtpEk2">
+    <mxGraphModel dx="1160" dy="2036" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="rW9P9c8KnCAy5u38_Pi6-2" value="" style="aspect=fixed;perimeter=ellipsePerimeter;html=1;align=center;shadow=0;dashed=0;spacingTop=3;image;image=img/lib/active_directory/generic_server.svg;" vertex="1" parent="1">
+          <mxGeometry x="600.2" y="-930" width="39.2" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="rW9P9c8KnCAy5u38_Pi6-5" value="123.231.1.1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="580.0000000000001" y="-862.5" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="rW9P9c8KnCAy5u38_Pi6-6" value="" style="aspect=fixed;perimeter=ellipsePerimeter;html=1;align=center;shadow=0;dashed=0;spacingTop=3;image;image=img/lib/active_directory/web_server.svg;" vertex="1" parent="1">
+          <mxGeometry x="599.8000000000001" y="-832.5" width="60" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="rW9P9c8KnCAy5u38_Pi6-7" value="DNS server" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="580.0000000000001" y="-762.5" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="rW9P9c8KnCAy5u38_Pi6-8" value="" style="html=1;verticalLabelPosition=bottom;align=center;labelBackgroundColor=#ffffff;verticalAlign=top;strokeWidth=2;strokeColor=#0080F0;shadow=0;dashed=0;shape=mxgraph.ios7.icons.user;" vertex="1" parent="1">
+          <mxGeometry x="110" y="-910" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rW9P9c8KnCAy5u38_Pi6-9" value="" style="aspect=fixed;perimeter=ellipsePerimeter;html=1;align=center;shadow=0;dashed=0;spacingTop=3;image;image=img/lib/active_directory/generic_server.svg;" vertex="1" parent="1">
+          <mxGeometry x="600.2" y="-1027.5" width="39.6" height="70.71" as="geometry" />
+        </mxCell>
+        <mxCell id="rW9P9c8KnCAy5u38_Pi6-10" value="&amp;nbsp;234.234.10.11" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="579.4000000000001" y="-960" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="rW9P9c8KnCAy5u38_Pi6-11" value="" style="image;html=1;image=img/lib/clip_art/networking/Router_Icon_128x128.png" vertex="1" parent="1">
+          <mxGeometry x="200" y="-915" width="50" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="rW9P9c8KnCAy5u38_Pi6-12" value="" style="image;html=1;image=img/lib/clip_art/networking/Router_Icon_128x128.png" vertex="1" parent="1">
+          <mxGeometry x="480" y="-1012.5" width="50" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="rW9P9c8KnCAy5u38_Pi6-13" value="" style="image;html=1;image=img/lib/clip_art/networking/Router_Icon_128x128.png" vertex="1" parent="1">
+          <mxGeometry x="480" y="-915" width="50" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="rW9P9c8KnCAy5u38_Pi6-14" value="" style="image;html=1;image=img/lib/clip_art/networking/Router_Icon_128x128.png" vertex="1" parent="1">
+          <mxGeometry x="480" y="-817.5" width="50" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="rW9P9c8KnCAy5u38_Pi6-18" value="" style="curved=1;endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="rW9P9c8KnCAy5u38_Pi6-12">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="260" y="-880" as="sourcePoint" />
+            <mxPoint x="280" y="-1000" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="350" y="-890" />
+              <mxPoint x="410" y="-970" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rW9P9c8KnCAy5u38_Pi6-19" value="" style="curved=1;endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="rW9P9c8KnCAy5u38_Pi6-14">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="260" y="-880" as="sourcePoint" />
+            <mxPoint x="475" y="-782.5" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="345" y="-870" />
+              <mxPoint x="405" y="-790" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rW9P9c8KnCAy5u38_Pi6-21" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="rW9P9c8KnCAy5u38_Pi6-11" target="rW9P9c8KnCAy5u38_Pi6-13">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="-845" as="sourcePoint" />
+            <mxPoint x="450" y="-895" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rW9P9c8KnCAy5u38_Pi6-16" value="" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;opacity=60;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="270" y="-990" width="200" height="220" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
