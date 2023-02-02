@@ -84,9 +84,9 @@ TODO
 
 \chapter{Introduction}
 
-People us the internet to communicate and share a variety of content. Some entities choose to censor internet connections. These entities may range from individual network administrators to a full nation-state. In this paper, we explore the background and current state of censorship circumvention, and then design and build a system which tackles several of the limitations present in state of the art systems. [LATER: Add xrefs to sections]
+People us the internet to communicate and share a variety of content. Some entities choose to censor internet connections. These entities may range from individual network administrators to a full nation-state. In this paper, we explore the state of censorship, existing circumvention sytems, and we design and build a system which tackles several of the limitations present in state of the art systems. [LATER: Add xrefs to sections]
 
-We begin by exploring what we mean by censorship circumvention and establishing baseline terminology for this subdiscipline. We then explore the present theory behind approaches to censorship circumvention. We address the ethics of censorship circumvention as a field, and how the field originated and how that affects the current state of the field.
+We begin by exploring what we mean by censorship circumvention and establishing baseline terminology for this discipline. We then explore the present theory behind approaches to censorship circumvention. We address the ethics of censorship circumvention as a field, and how the field originated and how that affects the current state of the field.
 
 We then propose several ways to classify existing systems to allow for some comparison between them, and we then explore existing and past systems to understand where the field stands, and where limitations occur. We emphasize systems that are either cutting edge or in active use in the real world.
 
@@ -100,7 +100,7 @@ We then conclude and offer some opportunities for future work.
 
 \chapter{Background}
 
-TODO
+The term censorship has taken on a life of it's own in the modern social and political context. We are \emph{not} exploring the general connotation of censorship, rather, we are exploring a specific type of censorship that existing in a networking (particularly internetworking) context.
 
 \section{What is censorship circumvention?}
 
@@ -128,12 +128,6 @@ We assume our adversary has some interest in the utility of the internet and cer
 
 Finally, we note that any technique that subverts this adversary will also work when weakening the strength of these assumptions - e.g. if the adversary controls one nation instead of several, we have more area to run a circumvention system from; if the adversary is only willing to take actions at service providers and not on-the-wire, anything that can thwart an adversary that takes both actions could trivially thwart the adversary that only performs actions at one. We also note that a system could detect the type of actions an adversary is taking and maximize performance based upon what subset of possible actions an adversary is taking - e.g. an adversary that is not touching services leaves an easy path for a circumvention system to use - those services themself.
 
-\subsection{Current theory of censorship circumvention}
-
-TODO
-
-[TODO: Mention parrot is dead]
-
 \subsection{Origination of censorship circumvention}
 
 The web arose in a relatively haphazard fashion [TODO: discuss a bit more]. The web was not a place where adversaries engaged in censorship (if they paid any mind to the web whatsoever). Instead, as the web became more prominent and more global, individuals realized that they could be tracked, and that they desired anonymity. This led to the development of anonymity software, with Tor being the most prominent example. Censorship circumvention arose as a by-product of goals that were not focused on censorship circumvention. As primitive censorship began (e.g. blocking specific IP addresses of an undesired server), people realized that software that proxies traffic (either in a basic fashion such as a proxy, or a more complex fashion such as Tor) could be used to access services that would otherwise be blocked on a local network.
@@ -143,6 +137,12 @@ As this occurred, the web continued to grow in prominence, and the concept of "W
 At this point, those who used and built the anonymity software recognized that censorship circumvention would be crucial for maintaining access to these tools, and others realized that censorship circumvention in-and-of itself would be useful. This effectively led to the rise of a subdiscipline that draws heavily from networking, security, and even game theory, but also exists independently from those subdisciplines, with a variety of stakeholders including governments, NGOs, non-profits, independent programmers, academics, and others interested in developing censorship circumvention techniques. This also leads to a relatively unique feature of this discipline - some techniques were developped in academia, some techniques were developped in the real world, and some were developped in both, and ignoring the results from either thread of research and observation can lead to the development of limited systems.
 
 [TODO: Mention Tor PTs independently of specific methods]
+
+\subsection{Current theory of censorship circumvention}
+
+TODO
+
+[TODO: Mention parrot is dead]
 
 \section{Prior techniques}
 
