@@ -184,29 +184,56 @@ At this point, those who used and built the anonymity software recognized that c
 
 \subsection{Current theory of censorship circumvention}
 
-Present censorship circumvention is currently built on two techniques: proxying traffic \emph{out} of the adversaries sphere of influence, and providing access to those proxies. If you can provide access to a proxy, then using existing proxying technology is trivial. The majority of censorship circumvention theory is focused on providing access to proxies.
+Present censorship circumvention is currently built on two techniques: proxying traffic \emph{out} of the adversaries sphere of influence, and providing access to those proxies. If you can provide access to a proxy, then using existing proxying technology is trivial. The majority of censorship circumvention theory is, therefore, focused on providing access to proxies.
 
-The bedrock of the theory underlying succesful provision of access to proxies is collateral damage. We begin with a basic model - an adversary will engage in the censorship of service $x$ if $B_x - C_x > 0$, where $B_x$ is the average benefit per user of engaging in censorship of service $x$ and $C_x$ is the average cost of engaging in censorship of service $x$. We will refine this formula by switching to a focus on censorship techniques - $(b_{x,1} + b_{x,2} + ... + b_{x,n}) - C_x > 0$, where $b_{x,n}$ is the average benefit per user of censoring service $n$ using method $x$. A censor will engage in any censorhip method where the average benefit reaped by censoring \emph{any} desired services using that method is greater than the cost. Also note that these benefits and costs are based on how they are \emph{perceived} by the censor, not by an objective, bird-eye view of good vs. bad, and they may account for a variety of benefits/cost, including direct financial costs, but also including less tangible value such as "stability".
+The bedrock of the theory underlying succesful provision of access to proxies is collateral damage.
 
-We now note that each method may only stop a fraction of users accessing a service using a method - so a more realistic formulation would be $(u_{x,1}*b_{x,1} + u_{x,2}*b_{x,2} + ... + u_{x,n}*b_{x,n}) - C_x > 0$, where $u_{x,n}$ is the fraction of users accessing service $n$ are blocked from accessing service $n$ using method $x$.
+[TODO: Discuss collateral damage more]
+
+\subsubsection{Modeling collateral damage}
+
+We begin with a basic model - an adversary will engage in the censorship of service $x$ if $B_x - C_x > 0$, where $B_x$ is the average benefit per user of engaging in censorship of service $x$ and $C_x$ is the average cost of engaging in censorship of service $x$. We will refine this formula by switching to a focus on censorship techniques - $(b_{x,1} + b_{x,2} + ... + b_{x,n}) - C_x > 0$, where $b_{x,n}$ is the average benefit per user of censoring service $n$ using method $x$. A censor will engage in any censorhip method where the average benefit reaped by censoring \emph{any} desired services using that method is greater than the cost. Also note that these benefits and costs are based on how they are \emph{perceived} by the censor, not by an objective, bird-eye view of good vs. bad, and they may account for a variety of benefits/cost, including direct financial costs, but also including less tangible value such as "stability".
+
+We now note that each method may only stop a fraction of users accessing a service using a method - so a more realistic formulation would be $(u_{x,1}*b_{x,1} + u_{x,2}*b_{x,2} + ... + u_{x,n}*b_{x,n}) - C_x > 0$, where $u_{x,n}$ is the fraction of users accessing service $n$ that are blocked from accessing service $n$ using method $x$.
 
 We will now break down cost further. $C_x = f_x + m_x$ - where $f_x$ is the fixed cost per user of setting up method $x$ and $m_x$ is the marginal cost of actively engaging in $x$ per user. We will drop $f_x$ from further consideration (ie, $C_x = m_x$) - the cost of setting up a method is a one time cost, and to an adversary with unlimited resources, expending a one time cost averages to $0$ over the long run. We will now explore the marginal cost of $x$. Censorship tools may slow down "good" traffic, and they may erroneously block access to good services. Therefore, $C_x = s_x*i_x + (u_{x,1}*c_{x,1} + u_{x,2}*c_{x,2} + ...  + u_{x,n}*c_{x,n})$, where $c_{x,n}$ is the average cost of blocking service $n$ per user, $u_{x,n}$ is the same as above, $s_x$ is the average fraction of the total value of unblocked traffic retained (due to the reduction in speed caused by enabling method $x$),\footnote{Note that an adversary may engage in multiple stages of filtering, so some subsets of unblocked traffic may experience no slowdown, while some might experience more. For the purposes of our analysis, we can use the average across all allowed traffic.}, and $i_x$ is the value per user of access to all unblocked sites. Combining the above, we see
 $(u_{x,1}*b_{x,1} + u_{x,1}*b_{x,2} + ... + u_{x,n}*b_{x,n}) - s_x*i_x + (c_{x,1} + c_{x,2} + ...  + c_{x,n}) > 0$, or, more sucintly:
 \begin{equation}
-
+-s_x*i_x + \sum_{s=1}^{n}u_{x,s}*v_{x,s} > 0
 \end{equation}
+where $v_{x,s} = b_{x,s} - c_{x,s}$.
 
-We could conclude here if a censor engaged in censorship using 
+We could conclude here if a censor engaged in censorship solely using a singular method of censorship - however, censors engage in multiple methods of censorship, and the benefit of succesfully blocking a site is not distributed multiple times if it's blocked by multiple methods, the benefit is only achieved based on new users blocked by a method, or, in short, a singular censorship system $x$ will be implemented if:
+\begin{equation}
+-s_x*i_x + \sum_{s=1}^{n}\Delta u_{x,s}*v_{x,s} > 0
+\end{equation}
+Note that all variables are the same, except $i_x$ is now the value per user of access to all unblocked sites prior to enabling censorship system $x$ and $\Delta u_{x,s}$ is the change in the fraction of users who can access service $s$ after enabling $x$.
 
-[TODO: Mention parrot is dead]
+We have now established an equation used to determine if a censor will enable an individual system, taking existing sytems (or lack thereof) as a given. This is not reflective of reality, where a rational censor will evaluate \emph{all} of their active and potentical circumvention systems in conjunction.
+
+The valuation of a system consisting of censorship systems $1$ through $m$ is as follows:
+\begin{equation}
+\sum_{x=1}^{m}\sum_{s=1}^{n}\Delta u_{x,s}*v_{x,s} - i_{x} * \prod_{x=1}^{m}s_x
+\end{equation}
+All variables are the same as previously, except $i_x$ is the value per user of access to all unblocked sites again, $s_x$ is the average fraction of the total value of unblocked traffic retained after enabling all systems $y$ with $0\leq y<x$, and $\Delta  u_{x,s}$ change in fraction of all users blocked using method $x$ that were not already blocked after enabling all systems $y$ with $0\leq y<x$. We will define $x=0$ such that this "censorship" system is the null (non-existent) censorship system, and therefore $s_0 = 1$, and $u_{0,s} = 0$.
+
+We assert that a censor is picking from a number of censorship systems that is small enough such that the censor can evaluate the above equation for every possible set of censorship systems in every permutation such that each set only has one of each censorship system in a reasonable amount of time. [TODO: Maybe justify a bit more?]
+
+A rational censor will enable the set of censorship systems such that the above equation is maximized given every potential set of circumvention systems.
+
+[TODO: Dig into the base rate fallacy]
 
 \section{Prior techniques}
+
+[TODO: Mention parrot is dead]
 
 TODO
 
 [TODO: Mention Tor PTs independently of specific methods]
 
 [TODO: Do mention some things like shadowsocks that are in use but are even further from academics]
+
+[TODO: Mention stego]
 
 \subsection{[Point to point obfuscation]}
 
