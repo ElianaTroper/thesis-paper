@@ -157,6 +157,16 @@ Finally, we note that any technique that subverts this adversary will also work 
 \caption{A model of networking, with our adversary model overlaid [TODO: Once networking diagram is finalized, add an adversary]}
 \end{figure}
 
+\subsection{User model}
+
+[TODO]
+
+[TODO: We should outline that we do not assume unlimited resources for our system. We should outline that we expect users to run the software on a phone or basic computer, and that we expect the system to be run by volunteers (who may or may not have significant resource)]
+
+\subsection{System provider model}
+
+[TODO]
+
 \subsection{History and basics}
 
 The web arose in a relatively haphazard fashion [TODO: discuss a bit more]. The web was not a place where adversaries engaged in censorship (if they paid any mind to the web whatsoever). Instead, as the web became more prominent and more global, individuals realized that they could be tracked, and that they desired anonymity. This led to the development of basic and advanced anonymity software, with proxying being a basic tool for this and Tor being the most prominent example of full fledged anonymity software.
@@ -221,9 +231,11 @@ We assert that a censor is picking from a number of censorship systems that is s
 
 A rational censor will enable the set of censorship systems such that the above equation is maximized given every potential set of circumvention systems.
 
-[TODO: Dig into the base rate fallacy]
+[TODO: Dig into the base rate fallacy, and expound on that with an equation based expansion that fits in the above model]
 
 \section{Prior techniques}
+
+[TODO: For each of these be sure to mention if they work IRL]
 
 [TODO: Mention parrot is dead]
 
@@ -234,6 +246,8 @@ TODO
 [TODO: Do mention some things like shadowsocks that are in use but are even further from academics]
 
 [TODO: Mention stego]
+
+[TODO: Discuss fingerprinting, including contemporary examples w/ snowflake]
 
 \subsection{[Point to point obfuscation]}
 
@@ -253,7 +267,9 @@ TODO
 
 TODO
 
-[TODO: Iran case study]
+[TODO: Add a diagram which will be used later to start to show "modifications" from the snowflake model to get our system]
+
+[TODO: Iran case study to highlight scalability]
 
 \subsubsection{MassBrowser}
 
@@ -267,25 +283,37 @@ TODO
 
 TODO
 
-\subsubsection{Raven}
+\subsubsection{Email}
 
-TODO
+[TODO: Mention this w/ raven, bridgedb, etc]
 
 \subsection{Decoy routing}
 
 TODO
 
+\subsubsection{Tapdance}
+
+\subsection{Tunneling and realistic behavior}
+
+\subsubsection{Raven}
+
 \section{Real world observations}
 
-TODO
+[TODO - a bunch of case studies]
 
 \subsection{Real world vs. academic theory}
 
-TODO
+[TODO - may cut this, but this will be drawing conclusions from our examples above, and comparing those adversaries to the adversary model we outlined, and will transition our discussion to OBFS/the bridge distribution problem]
+
+\subsection{The bridge distribution problem}
+
+[TODO - Salmon + that followup paper]
 
 \section{P2P networking}
 
 TODO
+
+[TODO: Torrents, Crypto, ???]
 
 \subsection{IPFS}
 
@@ -293,21 +321,29 @@ TODO
 
 \chapter{System design}
 
-We saw that several circumvention systems work given the constraints they were designed for, however, these constraints are either too loose and have known real-world failures under our adversary model, the systems are too difficult to deploy, or they have hit scalability issues.
+We saw that several circumvention systems work given the constraints they were designed for, however, these constraints are either too loose and have known real-world failures under our adversary model,\footnote{The bridge distribution problem being the most notable issue for several otherwise effective systems.} the systems are difficult to deploy, or they have scalability issues.
 
-We propose a system with a clear theoretical backing and acheivable goals based on both theory and real-world observations.
+Additionally, usability is also a crucial issue [TODO: COVER THIS IN RELATED WORK], and we identify two crucial issues where at least one of these affects every previously discussed system:
+\begin{itemize}
+  \item Low bandwidth/poor performance: Users want a good experience on the web. Some of these methods are completely unusable for proxying the entirety of a web session. Additionally, many of these items are tied to usage of Tor. While we support usage of Tor, it slows down web browsing even without circumvention tools in use, and usage can [result in broken behavior on some websites/some sites block Tor TODO: explore and cite either in fn or related work].
+  \item Barriers to entry: Every system we've explored that are usable by a layperson require usage in conjunction with Tor - and a layperson must be aware Tor exists, not be biased against it,\footnote{Some individuals believe that Tor is only used by criminals, and while we do not believe this is true, dispelling misinformation at a large scale is a herculean task that we will assume is not accomplishable in the short and medium term [TODO: Citing this would be good]} know how to get it, and not be censored when getting it.\footnote{Acquiring Tor is frequently censored for users, which means that a user \emph{must} acquire it prior to being under a censorship regime, or must have some out of band channel for acquisition. [TODO: Worth citing, may be worth bumping up importance]}
+\end{itemize}
+
+Below, we propose a system with a clear theoretical backing and acheivable goals based on both theory and real-world observations. [TODO: xref] We also address these other key issues.
 
 \section{Theory and goals}
 
 First, we want to define system goal and highlight some non-goals that are close to censorship circumvention, but are not directly used for them.
 
-We aim to thwart the adversary we outline in [xref]. We will rely heavily on the concept of collateral damage. [TODO: Discuss collateral damage further]
+We aim to thwart the adversary we outline in [TODO: xref]. We will rely heavily on the concept of collateral damage. [TODO: xref]
 
-We are \emph{not} aiming to provide anonymity.\footnote{Perhaps our system could be used to access an anonymity system, but we do not want to guarentee anonymity or guarentee that the system will not leak information that may break anonymity, though we are not delibrately trying to break anonymity, we are also not evaluating our system for it at this point.} We feel the need to emphasize this, as most current systems that are functional in the real world are used as pluggable transports by Tor.\footnote{Our system could be used as a PT, as we do have a golang implementation, however, evaluating this system for usage as a PT is reserved for future work.}
+We are \emph{not} aiming to provide anonymity.\footnote{Perhaps our system could be used to access an anonymity system, but we do not want to guarentee anonymity or guarentee that the system will not leak information that may break anonymity, though we are not delibrately trying to break anonymity, we are also not evaluating our system for it at this point.} We feel the need to emphasize this, as most current systems that are functional in the real world are used purely as a PT by Tor.\footnote{Our system could be used as a PT, as we do have a golang implementation, however, evaluating this system for usage as a PT is reserved for future work. [TODO: XREF PTs]}
 
-\subsection{Comparing existing systems}
+We will break down our goals into two sets: accomplishing censorship circumvention, and providing a more usable system for a layperson.
 
-Earlier, [TODO: xref] we discussed a variety of censorship circumvention systems. Observing how and why each of these work, and the drawbacks associated with each of them will allow us to formulate goals we wish to acheive and working techniques we may use. We present a short summary of previous systems in [TODO: xref table], comparing and contrasting their succesful techniques and transports, and their individual drawbacks.
+\subsection{Censorship circumvention}
+
+Earlier, [TODO: xref] we discussed a variety of censorship circumvention systems. Observing how and why each of these work, and the drawbacks associated with each of them will allow us to formulate goals we wish to acheive, working techniques we may use, and a theory for our systems function. We present a short summary of previous systems in [TODO: xref table], comparing and contrasting their succesful techniques and transports, and their individual drawbacks.
 
 \begin{table}
 \caption{Comparison of existing systems.}
@@ -325,13 +361,57 @@ We see that existing systems are limited by at least one of the following:
   \item Low bandwidth
 \end{itemize}
 
-Another key observation is that \emph{collateral damage} is the bedrock of the theory behind a circumvention system - as such, any system must be based around maximizing this - the ideal system will make the only feasible way to shut down the system effectively shutting down a large portion of internet traffic. 
+Another key observation is that \emph{collateral damage} is the bedrock of the theory behind \emph{all} circumvention systems - as such, any system must be based around maximizing this - the ideal system will make the only feasible way to shut down the system effectively shutting down a large portion of internet traffic. 
 
 [TODO: Discuss false positives + the overhead of blocking traffic]
 
 [TODO: More]
 
+We first note that systems with deployment difficulty (refraction networking) as their primary limitation rely on either a single or handful of \emph{large}, \emph{continuously cooperative} entities (all very large tech corporations). This makes the circumvention method brittle - ie, a change of heart of very few entities could negate the effectiveness of this method. We believe that not only is this a possibility, but it is a \emph{likely} possibility - we note that adversaries may be as large as a collective of nations in our model - and given the profit maximization of corporations, these entitites will want to perform business in the sphere of influence of our adversary. The adversary could pressure the entity to shut down the system in order to perform business within, with, and with citizens of the sphere of influence of the adversary. Economic theory implies that this will occur in the long run. [TODO: shore this up with both more clear wording and with some cites to examples] Due to this limitation we will not be building on refraction networking for our system.
+
+[TODO: We will not use systems with the bridge distribution problem as their flaw, xref salmon section]
+
+We are now effectively left with techniques with scalability and low bandwidth as our primary limitations to consider. Systems with low bandwidth are either directly limited through maximum channel bandwidth,\footnote{Even without system overheads - e.g. Raven reduces bandwidth from an already low level to an even \emph{lower} level.} or through financial cost. Because of our system and user model, where the system is run with potentially limited resources and users are not charged for usage, we cannot require users to pay to access the system or expect large financial expenditures from our system provider. This means we may not use these techniques for the majority of our systems operation (though we may use them for low-bandwidth usage, such as bootstrapping).
+
+We are left with systems whose primary limitation is scalability. We see that Snowflake is the only remaining existing system. Snowflake was developped primarily in the real world - and we know it works in the real world - but to build off of this success we want to formalize that success and that system design.
+
+We will return to our model of censorship, reprinted below [XREF]:
+\begin{equation}
+\sum_{x=1}^{m}\sum_{s=1}^{n}\Delta u_{x,s}*v_{x,s} - i_{x} * \prod_{x=1}^{m}s_x
+\end{equation}
+
+We will now refine our adversary definition further. We will assume our adversary has access to any censorship system proposed in the literature \emph{or} in use (either actively, historically, or proposed for use) in the real world. We will break down our adversaries into two classes:
+\begin{itemize}
+  \item Has a high tolerance for a low $\prod_{x=1}^{m}s_x$.
+  \item Has a low tolerance for a low $\prod_{x=1}^{m}s_x$.
+\end{itemize}
+We note that both adversaries have been observed in the real world, with [XREF Iran] slowing down \emph{all} traffic notably, and all other adversaries slowing down only limited subsets of traffic at most (e.g. [XREF Russia with Twitter]).
+
+We will now assume that all adversaries are rational. This allows us to conclude that an adversary has optimized their censorship apparatus by evaluating all possible combinations of censorship systems. [TODO: dive a bit more into this in the earlier section, and discuss game theory a bit more] We will let $V_existing = \sum_{x=1}^{m_existing}\sum_{s=1}^{n}\Delta u_{x,s}*v_{x,s} - i_{x} * \prod_{x=1}^{m_existing}s_x$ for the optimized set $S$ of censorship apparatuses of size $m_existing$.
+
+We propose a theoretical censorship system, $s_{new}$. We will consider $S \cup {s_{new}}$. Our censor will reevaluate the utility of their system using every permutation of this larger set. This means that they will evaluate adding $s_{new}$ to their system, and keeping all existing systems or removing some of them and adding this new one. We will let this new set be $S_{new}$. We have two potential cases:
+\begin{itemize}
+  \item $S_{new}$ does not include $s_{new}$ - ie, $S_{new} = S$. In this case, the censor is not engaging any new censorship sytems.
+  \item $S_{new}$ includes $s_{new}$ - ie, they engaged the new system. In this case we will assume that they will never disable an old system. [TODO: Can we prove that they will never disable an old system?] This means we can evaluate a new system using a simplified formula from earlier:
+  \begin{equation}
+-s_x*i_x + \sum_{s=1}^{n}\Delta u_{x,s}*v_{x,s} > 0
+  \end{equation}
+  [TODO: XXX: FIX S REUSE IN FORMULAS]
+\end{itemize}
+
+[TODO: APPLY THE ECONOMIC MODEL OF CENSORSHIP CIRCUMVENTION TO SNOWFLAKE]
+
+We know censors do not censor Snowflake. We can assert the 
+
+[We have a value, though abstract, that we can relatively compare to - so long as adjustments to our system have a net 0 or an increase in censorship costs
+
+[TODO: MAKE AN ASSUMPTION - OUR THEORETICAL ADVERSARY CAN BE THOUGHT OF AS HAVING THE CAPABILITIES OF ALL REAL WORLD ADVERSARIES + ACADEMIC ATTACKS - BUT THEY HAVE A UTILITY MODEL BASED ON REAL WORLD COUNTRIES - EXPLORE AN ADVERSARY A LA IRAN WILLING TO SLOW DOWN GENERAL TRAFFIC AND BLOCK A LOT, AND ONE THAT IS MORE SIMILAR TO CHINA - VERY WILLING TO BLOCK, BUT NOT WILLING TO SLOW DOWN TRAFFIC - USE FALSE POSITIVE RATES OF REAL COUNTRIES TO GET A THEORETICAL ADVERSARIES FALSE POSITIVE FUNCTION - JUSTIFY WITH THE RELATIVE LACK OF INTERNET SHUTDOWNS AND UNWILLINGNESS TO USE WANG ET AL FOR OBFS OR ANYTHING WITH SNOWFLAKE]
+
+\subsection{Usability}
+
 We also note that existing systems require a user to download and use specialized software, and that systems usually require using anonymity software such as Tor to reap the benefits of censorship circuvmention. While anonymity is a useful [thing] to have in some circumstances on the web, getting the drawbacks of common anonymity software [TODO: outline] is not ideal.
+
+[TODO: More]
 
 \section{Implementation}
 
