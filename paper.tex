@@ -409,13 +409,23 @@ We know censors do not censor Snowflake. We can assert the
 
 \subsection{Usability}
 
-We also note that existing systems require a user to download and use specialized software, and that systems usually require using anonymity software such as Tor to reap the benefits of censorship circuvmention. While anonymity is a useful [thing] to have in some circumstances on the web, getting the drawbacks of common anonymity software [TODO: outline] is not ideal.
+We also note that existing systems require a user to download and use specialized software, and that systems usually require using anonymity software such as Tor to reap the benefits of censorship circuvmention. While anonymity is a useful [thing] to have in some circumstances on the web, getting the drawbacks of common anonymity software [TODO: outline] is not ideal in all use cases, particularly getting users to adopt software.
 
-[TODO: More]
+[TODO: More - draw from usability studies]
 
 \section{Implementation}
 
-TODO
+We outlined certain goals we want to achieve based upon successes and limitations. Notably:
+\begin{itemize}
+  \item Building off of a succesful technique, increase collateral damage. This can be done by increasing the number of services that would be blocked should an adversary take action, or increasing the slowdown to other traffic.
+  \item Increasing usability, particularly by lowering the barrier to entry for users, enabling easier acquision of the system, and increasing bandwidth for circumvention focused usage.
+\end{itemize}
+
+As we noted above [xref], Snowflake seems to be the most promising style of circumvention system to build off of. This leaves us two approaches: stick with WebRTC or build a system with another available transport that models the topology of Snowflake.
+
+[TODO: Find a web study about most used protocols, spend some time discussing why there are not many viable alternatives to WebRTC]
+
+We choose to stick with WebRTC as our primary transport. We do this because, as we discussed previously, no adversary present in the real world has a utility function that allows them to censor Snowflake. [TODO: Spend some time discussing fingerprinting and why that isn't a long term issue] From this, we can see that the utility of WebRTC must outweigh the drawbacks of restricting it further. As such, to build on the success of Snowflake, we choose to instead change the topology
 
 \chapter{System evaluation}
 
@@ -433,9 +443,41 @@ TODO
 
 TODO
 
+\section{Ethics}
+
+In the course of this research, we developped and tested a system performing legal activity without a real-world adversary attempting to censor our traffic, using our own resources or public resources in an acceptable fashion. We \emph{emulated} an adversary by taking the most logical steps to censoring our system while mitigating collateral damage. As such, performing this research was ethical.
+
+Further exploration of deploying a system like this would be necessary. We previously discussed that adversaries may be able to deploy legal apparatuses to censor services within a country, and while we do not expect an adversary to have the ability to do this against most users, we cannot exclude the possibility that an adversary may use legal tools against \emph{some} users of our system.
+
+Our system is distinct from any deployed system: users of our system are also providers of our system. An adversary may not distinguish between users and providers of a system, but it is possible that they might, and if they did, they would likely punish "providers" more harshly than simple users.
+
+We see two potential paths towards potentially resolving this issue that would need to be considered before deployment to users in a censored area:
+\begin{itemize}
+  \item Plausibly deniability: If the system performs these actions without a users input, without informing a user, this provides them with plausible deniability. This would allow users to plead ignorance should an adversary attempt to punish them. Additionally, having a "killer app" that is useful to users \emph{regardless} of the ability to use circumvention would further enhance this path: if users use this system for reasons besides censorship circumvention, then users would be able to say they didn't know or care that the system provided censorship circumvention - they thought they were just using another app, not a circumvention system. 
+  \item Clear disclosure to users: Clearly disclosing to users how the system works means that users, who know their circumstances better than we could, could make the ideal decision for themselves to use the system. This may turn some users off of using the system, but it pushes the full decision to use the system onto users themselves, and would eliminate any uncertainty for users about what they were doing, and that they may be at risk doing it. The downside, of course, is that an adversary who catches a user using the system could take action against a user and the user would be unable to argue that they \emph{accidentally} were providing a circumvention service.
+\end{itemize}
+
+Beyond these two paths, we could also provide users with the ability to disable provision of services to other users. While this path could be explored further, the notable benefits (both scalability and increased collateral damage) provided by this system over Snowflake dissapear if users in a censored region opt out of being providers.
+
 \section{Future work}
 
-TODO
+[Evaluation of the average "value" of a user in the network, and ideal node balances, etc]
+
+[Plausable deniability]
+
+[Analyze what is lost when doing circumvention without anonymity]
+
+[Roll items into IPFS]
+
+[IPFS improvements: Authenticated pubsub]
+
+[Add support for PTs]
+
+[Add support for usage as a PT]
+
+[Add a Tor download]
+
+[Privacy enhancements]
 
 \appendices  % Indicates that appendices follow.
 % If there's only one, use \appendix instead.
