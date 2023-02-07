@@ -19,6 +19,7 @@
 \usepackage{lib/style/guthesis} % Must be the last package
 
 \newtheorem{theorem}{Theorem}[section]
+\newtheorem*{adversary}{Adversary}
 \newenvironment{proof}[0]{\textit{Proof.}}{}
 \newcommand{\qed}{\hfill $\Box$}
 
@@ -429,15 +430,59 @@ We choose to stick with WebRTC as our primary transport. We do this because, as 
 
 \chapter{System evaluation}
 
-TODO
+Having built our system, we will perform an evaluation of our system. Demonstrating that the system as designed is viable [shows that a system that improves on Snowflake is not just theoretical, but also practicle].
+
+[More]
 
 \section{Performance}
 
-TODO
+Demonstrating performance is a key measure to show our system works and that it is possible to bootstrap with limited resources.
+
+We first show that our system \emph{under no censorship} functions [TODO: good description of the final results]
+
+[TODO: Describe how the benchmarking app works]
+
+[TODO: a table, likely a full page sideways, will exist here outlining the results of our benchmarking app]
+
+[TODO: Walk through results]
+
+\section{Performance under censorship}
+
+Having demonstrated basic functionality, we will show that our system not only works, but works [TODO: well (verify)] under some of the more extreme censorship that could occur. To do this, we take steps a censor would likely take to attack this system.
+
+\subsection{Blocking bootstrapping nodes}
+
+The easiest vector of attack a censor could take to attempt to block our system is to block the IPs and DNS records of the bootstrapping nodes used for the system. We discuss this method of attack in the real world more in [TODO: xref bootstrapping availability AND system design AND related work], as well as our mitigations for the attack.
+
+We perform the same benchmarking test without using any default bootstrapping nodes. We do this by using a stand-in for a high value channel, which connects to the system and performs bootstrapping \emph{without} using the default nodes. [POTENTIAL EXPANSION: Don't just do a stand-in, actually do it using raven] [POTENTIAL EXPANSION: FIREWALL THE NODES as extra proof] We perform the same tests as above.
+
+[TODO: a table, likely a full page sideways, will exist here outlining the results of our benchmarking app]
+
+[TODO: Walk through results]
+
+\subsection{Blocking \emph{all} transports except WebRTC and a high value channel}
+
+Instead of iterating through all potential censorship apparatuses that are more powerful than simply blocking the bootstrapping nodes, we outline a \emph{very} strong adversary willing to engage in massive censorship and show that our system still survives.
+\begin{adversary}
+An adversary is dealing with serious turmoil within their borders. They decide that all non-essential web traffic is to be shutdown. They designate email and video chats as essential for their own communication, and as such allow access to email and WebRTC. They block all other traffic, excluding some auxilary traffic that are used related to those (e.g. DNS, STUN, TURN).
+\end{adversary}
+Note that this means that our adversary is blocking bootstrapping nodes as well.
+
+We perform the same benchmarking test as before, without using any default bootstrapping nodes \emph{and} without using any transport besides our stand-in for a high value channel and WebRTC. [POTENTIAL EXPANSION: Don't just do a stand-in, actually do it using raven] [POTENTIAL EXPANSION: FIREWALL THIS - will be harder than before since will need to whitelist DNS/STUN/TURN/ETC]
+
+[TODO: a table, likely a full page sideways, will exist here outlining the results of our benchmarking app]
+
+[TODO: Walk through results]
+
+\subsection{A more advanced adversary?}
+
+We see that no real-world adversary has a utility function which allows them to block Snowflake. This does not mean that an adversary may not be able to build a more advanced censorship system. We believe that the changes that we have made to the model setup in Snowflake drastically increases the costs [TODO: Either outline or xref] to censor our system over Snowflake, and as such an adversary would not just have to build a system that could censor Snowflake with acceptable collateral damage, but they would also have to build one \emph{significantly better} [TODO: Describe more precisely] than that to stop our system. That may happen in the future, but [discuss current literature on traffic analysis + false positives rate or xref those].
 
 \section{Bootstrapping availability}
 
-TODO
+[TODO: Section using RIPE probes]
+
+[TODO: Tie into getting the network bootstrapped/security through obscurity]
 
 \chapter{Conclusion}
 
@@ -454,10 +499,12 @@ Our system is distinct from any deployed system: users of our system are also pr
 We see two potential paths towards potentially resolving this issue that would need to be considered before deployment to users in a censored area:
 \begin{itemize}
   \item Plausibly deniability: If the system performs these actions without a users input, without informing a user, this provides them with plausible deniability. This would allow users to plead ignorance should an adversary attempt to punish them. Additionally, having a "killer app" that is useful to users \emph{regardless} of the ability to use circumvention would further enhance this path: if users use this system for reasons besides censorship circumvention, then users would be able to say they didn't know or care that the system provided censorship circumvention - they thought they were just using another app, not a circumvention system. 
-  \item Clear disclosure to users: Clearly disclosing to users how the system works means that users, who know their circumstances better than we could, could make the ideal decision for themselves to use the system. This may turn some users off of using the system, but it pushes the full decision to use the system onto users themselves, and would eliminate any uncertainty for users about what they were doing, and that they may be at risk doing it. The downside, of course, is that an adversary who catches a user using the system could take action against a user and the user would be unable to argue that they \emph{accidentally} were providing a circumvention service.
+  \item Clear disclosure to users: Clearly disclosing to users how the system works means that users, who know their circumstances better than we could, could make the ideal decision for themselves to use the system. This may turn some users off of using the system, but it pushes the full decision to use the system onto users themselves, and would eliminate any uncertainty for users about what they were doing, and that they may be at risk doing it. The downside, of course, is that an adversary who catches a user using the system could take action against a user and the user would be unable to argue that they \emph{unintentionally} were providing a circumvention service.
 \end{itemize}
 
-Beyond these two paths, we could also provide users with the ability to disable provision of services to other users. While this path could be explored further, the notable benefits (both scalability and increased collateral damage) provided by this system over Snowflake dissapear if users in a censored region opt out of being providers.
+Beyond these two paths, we could also provide users with the ability to disable provision of services to other users. While this path could be explored further, the notable benefits (both scalability and increased collateral damage) provided by this system over Snowflake partially or fully dissapear if users in a censored region opt out of being providers.
+
+While we believe that one of these paths (clear disclosure) would allow for an ethical deployment of our system, a deeper exploration of the alternative would be worthwhile to evaluate.
 
 \section{Future work}
 
