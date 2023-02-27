@@ -13,8 +13,18 @@
 \usepackage{amsthm}
 
 \usepackage{lib/style/guthesis} % Must be the last package
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks   = true, %Colours links instead of ugly boxes
+  urlcolor     = blue, %Colour for external hyperlinks
+  linkcolor    = black, %Colour of internal links
+  citecolor   = black %Colour of citations
+}
+
 
 \newtheorem{theorem}{Theorem}[section]
+\newtheorem{question}{Research Question}
+\newtheorem*{keyq}{Key Research Question}
 \newtheorem{adversary}{Adversary Model}
 
 % To comment out multiple lines of text.
@@ -78,11 +88,71 @@ TODO
 
 \chapter{Introduction}
 
-People us the internet to communicate and share a variety of content. Some entities choose to censor internet connections. These entities may range from individual network administrators to a full nation-state. In this paper, we explore the state of censorship, existing circumvention systems, and we design and build a system which tackles several of the limitations present in state of the art systems. [LATER: Add xrefs to sections]
+The internet has become a staple of the modern world, used by nearly every person on Earth.[CITE] The internet is a collection of independently managed networks which can route arbitrary traffic between said networks. It is built upon numerous \emph{protocols} which have been designed and iterated upon both academically and through practical usage over decades. Traffic on the internet travels from the edge of one network into another.\footnote{\emph{See} \ref{networking} for more on networking and key networking concepts.} This high level view loses some key context: networks are run by entities who have their own desires and are free to operate their network as they see fit. In an ideal world, all of these entities would run the same algorithms and would move traffic in a content-agnostic fashion, but we do not live in an ideal world. A variety of confounding factors result in a web that looks very different in practice from idealized theory: malicous entities use the web to perform attacks, bugs cause unforseen issues to arise, entities want to tightly control traffic and content in their network, among other complicating factors.
 
-We begin by exploring what we mean by censorship circumvention and establishing baseline terminology for this discipline. We then explore the present theory behind approaches to censorship circumvention. We address the ethics of censorship circumvention as a field, and how the field originated and how that affects the current state of the field.
+The more complicated web that actually exists leads to a variety of issues that don't arise in pure networking theory, one of which is \emph{censorship circumvention}.\footnote{\emph{See} \ref{circumvention} for our full definition and further discussion.} Censorship circumvention arises because some network-controlling entities choose to engage in censorhip. Censorship has become a loaded term in the current political context, and we do \emph{not} mean the coloquial usage of censorship. Censorship, as we discuss it, refers to entities censoring web traffic (either through complete blocking or other manipulation) at nodes (frequently routers) in the network(s) that they control. Censorship may be done for a variety of reasons - most censors will claim they are solely removing malicious traffic, however, an entity may operate their own definition of malicious which would differ from coloquial usage of the term. We see some entities that choose to block social media sites, news sources, or any site that they deem as block-worthy. Censors have a variety of justifications for their actions: economic protectionism, removing unsavory content, blocking dangerous content, maintaining law and order, and others. We see this and ask our key reasearch question:
+\begin{keyq}
+Can we circumvent censorship?
+\end{keyq}
+This is a very broad question - to be able to address it in a scientific manner we must refine it and break out some more specific and actionable research questions. To circumvent censorship, we must address what it is:
 
-We then propose several ways to classify existing systems to allow for some comparison between them, and we then explore existing and past systems to understand where the field stands, and where limitations occur. We emphasize systems that are either cutting edge or in active use in the real world.
+\begin{question}
+What do existing censorship systems look like?
+\end{question}
+
+We explore previous work to answer this question.[XREF] [TODO: Add more] This allows us to refine our key question:
+
+\begin{keyq}
+Can we circumvent existing censorship systems? If so, how?
+\end{keyq}
+
+As we discussed above, we note that some entity is performing censorship - censorship is not occuring spontaneously. Systems are not deployed magically, and do not arise without a concerted action undertaken by an entity. This leads us to our next research question:
+
+\begin{question}
+Can we define an adversary and model their censorship systems?
+\end{question}
+
+Previous work has spent significant time defining adversaries in order to posit new methods of circumvention, and we define our adversary in a similar fashion. Our adversary has unlimited resources, constrained only by physics and algorithmic limitations.\footnote{\emph{See} \ref{adversary} for our full definition and further discussion.} In our model, we also assume there is at least 1 location \emph{not} under the control of any censoring adversary. Our theoretical adversary is informed by both real world observations and theories developped in prior work. In the real world, we frequently see adversaries perform basic censorship actions, such as blocking IPs and DNS resolutions. We also see adversaries taking more extreme actions, such as performing fingerprinting attacks or other techniques involving deep packet inspection (DPI).\footnote{\emph{See} \ref{real} for our exploration of real-world adversaries.} In theory, we see formulations that involved the adversary either attacking specific protocols [TODO e.g. xref Wang discussion] or employing a specific method of attack. [TODO: xref Salmon discussion] In prior work, most adversarial actions are discussed in a vacuum - rather than looking at how an adversary may choose the full setup of a censorship suite, adversary modelling focuses on an adversary trying to tackle just one method of circumvention, and the broader picture is ignored. We formulate a model for evaluating an adversaries actions that looks at the \emph{whole} of their censorship apparatus:\footnote{\emph{See} \ref{theory} for more details and the derivation.}
+
+\begin{equation}
+[TODO: insert the final equation after cleaning notation]
+\end{equation}
+
+This model of an adversary is a novel contribution and allows for rooting research in the field to both existing theory and the real world. With an adversary and adequate model defined, we can further refine the key research question tackled in this paper:
+
+\begin{keyq}
+Can we circumvent our adversaries censorship systems?
+\end{keyq}
+
+We cannot immeadiately answer this question - as we see in our model, an adversary has some utility function. Using both observations and a hypothetical, consider a utility function where an adversary does not care about blocking access to sites they deem legitimate (i.e., blocking an allowed site has a utility to the adversary of $0$), but they strongly do not want anyone to access a non-legitimate site (i.e. a user accessing a non-legitimate site has a utility of $-\infty$). This adversary would simply disable the internet. This would provide them with $0$ utility, which is their maximal utility. In fact, in some instances censors have had real-world utility functions that result in actions like this, though those instances have been short lived.[CITE] However, in practice, we see that no censor has continually provided 0 internet access - indicating that real world adversaries place a non-zero value on allowing access to legitimate sites, but they might place a very negative value on some non-legitimate sites. The key point is that, while we can come up with infinite theoretical utility functions, we should focus on real and realistically possible utility functions, leading us to one research question:
+
+\begin{question}
+What does a realistic utility function look like for a censor?
+\end{question}
+
+We rely on looking at previous work focusing on real world adversaries to tackle this question, as well as novel contemporary observations. We find that most censors, in most circumstances, wish to censor users while providing access to acceptable sites. We also see that censors frequently fail to block some traffic that they could block using some known methods. This brings us to the key concept of \emph{collateral damage}. A censor can employ censorship techniques to stop some traffic that they wish to stop, but many methods of censorship would result in shutting down access to some allowed traffic as a result of using those methods. We see several real world adversaries who employ some similar and some differing techniques, with varying defgrees of collateral damage. As such, we refine our key research question:
+
+\begin{keyq}
+Can we circumvent our adversaries censorship system, given a realistic adversarial utility function?
+\end{keyq}
+
+First, if we \emph{only} look at \emph{current} censorship apparatuses and real-world adversarial utility functions, we could conclude and say yes - based entirely on previous work. In practice, we see that the circumvention system Snowflake is currently working under all adversaries. However, while, for analysis sake, we fix a utility function at a given point in time, adversaries \emph{do} change their utility functions, and new censorship systems arise. Adversaries are frequently trying to develop new systems, and so we cannot assume a system will last indefinitely.\footnote{We note that a circumvention system which is provably able to survive could arise, however \emph{all} existing tools either do not have a strong scientific proof (e.g. Snowflake) or proofs are frequently constrained beyond a reasonable point (e.g. Obfs).} We choose to look ahead to an adversary either adopting a different, more constraining utility function or the development of a new censorship system that is more optimal than currently deployed systems. This leads us to our next research question:
+
+\begin{question}
+What might censorship look like in the near future?
+\end{question}
+
+We note that stronger censorship in the near future may emerge due to either a utility function less sensitive to collateral damage, or using a more advanced censorship system. We review related work and synthesize some possibilities for actions an adversary may take in the future. We focus on currently succesful circumvention techniques, and provide some methods of censorship an adversary may engage in to further restrict these systems using existing techniques that might increase collateral damage. We also explore censorship techniques, and we observe that deep packet inspection and bridge enumeration are the two broad techniques an adversary may use in a more advanced censorship system. We discuss some directions that these techniques may proceed in. [TODO: More] We use this to refine our overarching research question into an approachable question:
+
+\begin{question}
+Can we circumvent our adversaries existing or potential censorship systems, given a realistic adversarial utility function?
+\end{question}
+
+We address this question head on. We design and build a system to do this.
+
+
+
+[TODO: Remove old intro]
 
 We also provide an overview of the state of peer to peer (P2P) networking, focusing on successful project operating in the real world. We provide a deeper dive into the Interplanetary File System (IPFS) and the underlying networking library, LibP2P. These programs are used extensively in out proposed system.
 
@@ -97,6 +167,7 @@ We then conclude and offer some opportunities for future work.
 The term censorship has taken on a life of it's own in the modern social and political context. We are \emph{not} exploring the general connotation of censorship, rather, we are exploring a specific type of censorship that existing in a networking (particularly inter-networking) context. We will explore some key concepts and present a short model of networking.
 
 \section{Networking concepts}
+\label{networking}
 
 We are going to consider the internet as it currently exists, rather than historical states of the internet. Some key concepts:
 
@@ -112,10 +183,11 @@ We are going to consider the internet as it currently exists, rather than histor
 \begin{center}
 {\includesvg{figures/networking}}
 \end{center}
-\caption{A model of networking, sufficient for exploring censorship circumvention [TODO: Add final arrows, some sample traffic]}
+\caption[Basic networking]{A model of networking, sufficient for exploring censorship circumvention [TODO: Add final arrows, some sample traffic]}
 \end{figure}
 
 \section{What is censorship circumvention?}
+\label{circumvention}
 
 When we discuss the subfield of censorship circumvention when discussing networking and security, we are \emph{not} discussing all forms of censorship that a web user might face - we are discussing censorship on-the-wire of active internet traffic, which usually consists of blocking access to specific services. We do not consider a service blocking certain conduct (e.g. a social network restricting hate speech) the censorship that we are circumventing. We aim to allow a use to connect to any service they would like (notwithstanding technical limitations) - not to allow a user to use any service how they would like. Throughout this paper, when we mention censorship, we mean on-the-wire censorship of reaching services.
 
@@ -126,6 +198,7 @@ We recognize that some users run heinous services on the web - most of which are
 The only notable class of crime which can occur without physical, real-world actions is piracy/IP violations. We believe that targeted legal actions (e.g. DMCA take-downs) can mitigate the issue, and that the cost of further mitigation through censorship would lead to large collateral damage of legal content and a chilling effect of legal speech and usage of the web, and as such the possibility of a circumvention system being used for piracy/IP violations is an acceptable risk given the ability to mitigate damage through the legal system.
 
 \subsection{Threat model and adversary}
+\label{adversary}
 
 Censorship circumvention is an abstract concept, and approaching it in a scientific way requires properly defining and scoping the task. We have already defined the task, [TODO: xref] and must now scope the problem. We will scope our problem by creating a \textbf{threat model} of the censor we are aiming to thwart, termed \textbf{the adversary}.
 
@@ -147,7 +220,7 @@ Finally, we note that any technique that subverts this adversary will also work 
 \begin{center}
 {\includesvg{figures/networking}}
 \end{center}
-\caption{A model of networking, with our adversary model overlaid [TODO: Once networking diagram is finalized, add an adversary]}
+\caption[Basic networking, with an adversary]{A model of networking, with our adversary model overlaid [TODO: Once networking diagram is finalized, add an adversary]}
 \end{figure}
 
 \subsection{User model}
@@ -178,7 +251,7 @@ These techniques are sufficient to cut off access to services for users who are 
 \begin{center}
 {\includesvg{figures/networking}}
 \end{center}
-\caption{A model of networking, with our adversary performing basic censorship [TODO: Once networking diagram is finalized, show blocking]}
+\caption[Basic networking, with an adversary performing censorship]{A model of networking, with our adversary performing basic censorship [TODO: Once networking diagram is finalized, show blocking]}
 \end{figure}
 
 Censorship circumvention arose as a by-product of tools made for purposes that were not focused on censorship circumvention. As primitive censorship began, people realized that anonymity software such as Tor or even a basic proxy could be used to access services that would otherwise be blocked. The entrances to these proxy services and Tor were accessed via well known IP addresses or DNS names.\footnote{The reason these were well known is that, if you want the public to access your service, they must know how to access these services, including the addresses of your service. These must be made public to allow people to access your service. A censor has access to public information.} Censors began being blocking access to these services, in addition to their original censorship targets. This set off a "censorship arms race."
@@ -187,46 +260,13 @@ At this point, those who used and built the anonymity software recognized that c
 
 \subsection{Current theory of censorship circumvention}
 
+[TODO: Rework]
+
 Present censorship circumvention is currently built on two techniques: proxying traffic \emph{out} of the adversaries sphere of influence, and providing access to those proxies. If you can provide access to a proxy, then using existing proxying technology is trivial. The majority of censorship circumvention theory is, therefore, focused on providing access to proxies.
 
 The bedrock of the theory underlying successful provision of access to proxies is collateral damage.
 
 [TODO: Discuss collateral damage more]
-
-\subsubsection{Modeling collateral damage}
-
-We begin with a basic model - an adversary will engage in the censorship of service $x$ if $B_x - C_x > 0$, where $B_x$ is the average benefit per user of engaging in censorship of service $x$ and $C_x$ is the average cost of engaging in censorship of service $x$. We will refine this formula by switching to a focus on censorship techniques - $(b_{x,1} + b_{x,2} + ... + b_{x,n}) - C_x > 0$, where $b_{x,n}$ is the average benefit per user of censoring service $n$ using method $x$. A censor will engage in any censorship method where the average benefit reaped by censoring \emph{any} desired services using that method is greater than the cost. Also note that these benefits and costs are based on how they are \emph{perceived} by the censor, not by an objective, bird-eye view of good and bad, and they may account for a variety of benefits/cost, including direct financial costs, but also including less tangible value such as "stability".
-
-We now note that each method may only stop a fraction of users accessing a service using a method - so a more realistic formulation would be $(u_{x,1}*b_{x,1} + u_{x,2}*b_{x,2} + ... + u_{x,n}*b_{x,n}) - C_x > 0$, where $u_{x,n}$ is the fraction of users accessing service $n$ that are blocked from accessing service $n$ using method $x$.
-
-We will now break down cost further. $C_x = f_x + m_x$ - where $f_x$ is the fixed cost per user of setting up method $x$ and $m_x$ is the marginal cost of actively engaging in $x$ per user. We will drop $f_x$ from further consideration (IE, $C_x = m_x$) - the cost of setting up a method is a one time cost, and to an adversary with unlimited resources, expending a one time cost averages to $0$ over the long run. We will now explore the marginal cost of $x$. Censorship tools may slow down "good" traffic, and they may erroneously block access to good services. Therefore, $C_x = s_x*i_x + (u_{x,1}*c_{x,1} + u_{x,2}*c_{x,2} + ...  + u_{x,n}*c_{x,n})$, where $c_{x,n}$ is the average cost of blocking service $n$ per user, $u_{x,n}$ is the same as above, $s_x$ is the average fraction of the total value of unblocked traffic retained (due to the reduction in speed caused by enabling method $x$),\footnote{Note that an adversary may engage in multiple stages of filtering, so some subsets of unblocked traffic may experience no slowdown, while some might experience more. For the purposes of our analysis, we can use the average across all allowed traffic.}, and $i_x$ is the value per user of access to all unblocked sites. Combining the above, we see
-$(u_{x,1}*b_{x,1} + u_{x,1}*b_{x,2} + ... + u_{x,n}*b_{x,n}) - s_x*i_x + (c_{x,1} + c_{x,2} + ...  + c_{x,n}) > 0$, or, more succinctly:
-\begin{equation}
--s_x*i_x + \sum_{s=1}^{n}u_{x,s}*v_{x,s} > 0
-\end{equation}
-where $v_{x,s} = b_{x,s} - c_{x,s}$.
-
-We could conclude here if a censor engaged in censorship solely using a singular method of censorship - however, censors engage in multiple methods of censorship, and the benefit of successfully blocking a site is not distributed multiple times if it's blocked by multiple methods, the benefit is only achieved based on new users blocked by a method, or, in short, a singular censorship system $x$ will be implemented if:
-\begin{equation}
--s_x*i_x + \sum_{s=1}^{n}\Delta u_{x,s}*v_{x,s} > 0
-\end{equation}
-Note that all variables are the same, except $i_x$ is now the value per user of access to all unblocked sites prior to enabling censorship system $x$ and $\Delta u_{x,s}$ is the change in the fraction of users who can access service $s$ after enabling $x$.
-
-We have now established an equation used to determine if a censor will enable an individual system, taking existing systems (or lack thereof) as a given. This is not reflective of reality, where a rational censor will evaluate \emph{all} of their active and potential circumvention systems in conjunction.
-
-The valuation of a system consisting of censorship systems $1$ through $m$ is as follows:
-\begin{equation}
-\sum_{x=1}^{m}\sum_{s=1}^{n}\Delta u_{x,s}*v_{x,s} - i_{x} * \prod_{x=1}^{m}s_x
-\end{equation}
-All variables are the same as previously, except $i_x$ is the value per user of access to all unblocked sites again, $s_x$ is the average fraction of the total value of unblocked traffic retained after enabling all systems $y$ with $0\leq y<x$, and $\Delta  u_{x,s}$ change in fraction of all users blocked using method $x$ that were not already blocked after enabling all systems $y$ with $0\leq y<x$. We will define $x=0$ such that this "censorship" system is the null (non-existent) censorship system, and therefore $s_0 = 1$, and $u_{0,s} = 0$.
-
-We assert that a censor is picking from a number of censorship systems that is small enough such that the censor can evaluate the above equation for every possible set of censorship systems in every permutation such that each set only has one of each censorship system in a reasonable amount of time. [TODO: Maybe justify a bit more?]
-
-A rational censor will enable the set of censorship systems such that the above equation is maximized given every potential set of circumvention systems.
-
-[TODO: Dig into the base rate fallacy, and expound on that with an equation based expansion that fits in the above model]
-
-[TODO: Walk through one example using this]
 
 \section{Prior techniques}
 
@@ -293,6 +333,7 @@ TODO
 \subsubsection{Raven}
 
 \section{Real world observations}
+\label{real}
 
 [TODO - a bunch of case studies]
  ,
@@ -315,6 +356,42 @@ TODO
 \subsection{IPFS}
 
 TODO
+
+\chapter{Theory}
+\label{theory}
+
+We begin with a basic model - an adversary will engage in the censorship of service $x$ if $B_x - C_x > 0$, where $B_x$ is the average benefit per user of engaging in censorship of service $x$ and $C_x$ is the average cost of engaging in censorship of service $x$. We will refine this formula by switching to a focus on censorship techniques - $(b_{x,1} + b_{x,2} + ... + b_{x,n}) - C_x > 0$, where $b_{x,n}$ is the average benefit per user of censoring service $n$ using method $x$. A censor will engage in any censorship method where the average benefit reaped by censoring \emph{any} desired services using that method is greater than the cost. Also note that these benefits and costs are based on how they are \emph{perceived} by the censor, not by an objective, bird-eye view of good and bad, and they may account for a variety of benefits/cost, including direct financial costs, but also including less tangible value such as "stability".
+
+We now note that each method may only stop a fraction of users accessing a service using a method - so a more realistic formulation would be $(u_{x,1}*b_{x,1} + u_{x,2}*b_{x,2} + ... + u_{x,n}*b_{x,n}) - C_x > 0$, where $u_{x,n}$ is the fraction of users accessing service $n$ that are blocked from accessing service $n$ using method $x$.
+
+We will now break down cost further. $C_x = f_x + m_x$ - where $f_x$ is the fixed cost per user of setting up method $x$ and $m_x$ is the marginal cost of actively engaging in $x$ per user. We will drop $f_x$ from further consideration (IE, $C_x = m_x$) - the cost of setting up a method is a one time cost, and to an adversary with unlimited resources, expending a one time cost averages to $0$ over the long run. We will now explore the marginal cost of $x$. Censorship tools may slow down "good" traffic, and they may erroneously block access to good services. Therefore, $C_x = s_x*i_x + (u_{x,1}*c_{x,1} + u_{x,2}*c_{x,2} + ...  + u_{x,n}*c_{x,n})$, where $c_{x,n}$ is the average cost of blocking service $n$ per user, $u_{x,n}$ is the same as above, $s_x$ is the average fraction of the total value of unblocked traffic retained (due to the reduction in speed caused by enabling method $x$),\footnote{Note that an adversary may engage in multiple stages of filtering, so some subsets of unblocked traffic may experience no slowdown, while some might experience more. For the purposes of our analysis, we can use the average across all allowed traffic.}, and $i_x$ is the value per user of access to all unblocked sites. Combining the above, we see
+$(u_{x,1}*b_{x,1} + u_{x,1}*b_{x,2} + ... + u_{x,n}*b_{x,n}) - s_x*i_x + (c_{x,1} + c_{x,2} + ...  + c_{x,n}) > 0$, or, more succinctly:
+\begin{equation}
+-s_x*i_x + \sum_{s=1}^{n}u_{x,s}*v_{x,s} > 0
+\end{equation}
+where $v_{x,s} = b_{x,s} - c_{x,s}$.
+
+We could conclude here if a censor engaged in censorship solely using a singular method of censorship - however, censors engage in multiple methods of censorship, and the benefit of successfully blocking a site is not distributed multiple times if it's blocked by multiple methods, the benefit is only achieved based on new users blocked by a method, or, in short, a singular censorship system $x$ will be implemented if:
+\begin{equation}
+-s_x*i_x + \sum_{s=1}^{n}\Delta u_{x,s}*v_{x,s} > 0
+\end{equation}
+Note that all variables are the same, except $i_x$ is now the value per user of access to all unblocked sites prior to enabling censorship system $x$ and $\Delta u_{x,s}$ is the change in the fraction of users who can access service $s$ after enabling $x$.
+
+We have now established an equation used to determine if a censor will enable an individual system, taking existing systems (or lack thereof) as a given. This is not reflective of reality, where a rational censor will evaluate \emph{all} of their active and potential circumvention systems in conjunction.
+
+The valuation of a system consisting of censorship systems $1$ through $m$ is as follows:
+\begin{equation}
+\sum_{x=1}^{m}\sum_{s=1}^{n}\Delta u_{x,s}*v_{x,s} - i_{x} * \prod_{x=1}^{m}s_x
+\end{equation}
+All variables are the same as previously, except $i_x$ is the value per user of access to all unblocked sites again, $s_x$ is the average fraction of the total value of unblocked traffic retained after enabling all systems $y$ with $0\leq y<x$, and $\Delta  u_{x,s}$ change in fraction of all users blocked using method $x$ that were not already blocked after enabling all systems $y$ with $0\leq y<x$. We will define $x=0$ such that this "censorship" system is the null (non-existent) censorship system, and therefore $s_0 = 1$, and $u_{0,s} = 0$.
+
+We assert that a censor is picking from a number of censorship systems that is small enough such that the censor can evaluate the above equation for every possible set of censorship systems in every permutation such that each set only has one of each censorship system in a reasonable amount of time. [TODO: Maybe justify a bit more?]
+
+A rational censor will enable the set of censorship systems such that the above equation is maximized given every potential set of circumvention systems.
+
+[TODO: Dig into the base rate fallacy, and expound on that with an equation based expansion that fits in the above model]
+
+[TODO: Walk through one example using this]
 
 \chapter{System design}
 
@@ -529,18 +606,6 @@ While we believe that one of these paths (clear disclosure) would allow for an e
 [Could use salmon stuff still, even if not perfect, especially since we are not an anonymity system]
 
 [Killer app/other uses/etc]
-
-\appendices  % Indicates that appendices follow.
-% If there's only one, use \appendix instead.
-
-\chapter{Sample appendix}
-SAMPLE
-\section{Sample section}
-SAMPLE
-
-\chapter{Second sample appendix}
-SAMPLE
-
 
 \bibliographystyle{plain}
 \bibliography{lib/cites}
