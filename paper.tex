@@ -90,17 +90,16 @@ TODO
 
 The internet has become a staple of the modern world, used by nearly every person on Earth.[CITE] The internet is a collection of independently managed networks which can route arbitrary traffic between said networks. It is built upon numerous \emph{protocols} which have been designed and iterated upon both academically and through practical usage over decades. Traffic on the internet travels from the edge of one network into another.\footnote{\emph{See} \ref{networking} for more on networking and key networking concepts.} This high level view loses some key context: networks are run by entities who have their own desires and are free to operate their network as they see fit. In an ideal world, all of these entities would run the same algorithms and would move traffic in a content-agnostic fashion, but we do not live in an ideal world. Various confounding factors result in a web that looks drastically different in practice from idealized theory: malicious entities use the web to perform attacks, bugs cause unforeseen issues to arise, entities want to tightly control traffic and content in their network, among other complicating factors.
 
-The more complicated web that exists in the real world leads to issues that do not arise in pure networking theory, one of which is \emph{censorship}. Censorship has become a loaded term in the current political context, and we do \emph{not} mean the colloquial usage of censorship. Censorship, as we discuss it, refers to entities censoring web traffic (either through complete blocking or other manipulation) at nodes (frequently routers) in the network(s) that they control. Censorship may be done for a variety of reasons - most censors claim they are solely removing malicious traffic, however, an entity may use their own definition of malicious which differs from colloquial usage of the term. We see some entities that choose to block social media sites, news sources, or any site that they deem as block-worthy. Censors have a variety of justifications for their actions: economic protectionism, removing unsavory content, blocking dangerous content, maintaining law and order, and others. We see this and ask our key research question:
+The complicated, real internet leads to issues that do not arise in pure networking theory, one of which is \emph{censorship}. Censorship has become a loaded term in the current political context, and we do \emph{not} mean the colloquial usage of censorship. Censorship, as we discuss it, refers to entities censoring web traffic (either through complete blocking or other manipulation) at nodes (frequently routers) in the network(s) that they control. Censorship may be done for a variety of reasons - most censors claim they are solely removing malicious traffic, however, an entity may use their own definition of malicious which differs from colloquial usage of the term. We see some entities that choose to block social media sites, news sources, or any site that they deem block-worthy. Censors have a variety of justifications for their actions such as economic protectionism, removing unsavory content, blocking dangerous content, and maintaining law and order. We see this and ask our key research question:
 \begin{keyq}
 Can we circumvent censorship?
 \end{keyq}
-This is a very broad question - to be able to address it in a concrete and scientific manner we must refine it and break out more specific and actionable research questions. To circumvent censorship, we must address what it is:
-
+This is a very broad question - to be able to address it in a concrete and scientific manner we must refine it and break out more specific and actionable research questions. To circumvent censorship, we must address what censorship is:
 \begin{question}
 What do censorship systems look like?
 \end{question}
 
-We explore previous work to answer this question.[XREF] [TODO: Add more] This allows us to refine our key question:
+We explore previous work to answer this question. In the real world, we frequently see adversaries perform basic censorship actions, such as blocking IPs and DNS resolutions. We also see adversaries taking more extreme actions, such as performing fingerprinting attacks or other techniques involving deep packet inspection (DPI).\footnote{\emph{See} \ref{real} for our exploration of real-world adversaries.} In theory, we see formulations that involve either attacking specific protocols [TODO e.g. xref Wang discussion] or employing a specific technique of attack applicable to several systems. [TODO: xref Salmon discussion] This allows us to refine our key question to focus on concrete systems:
 
 \begin{keyq}
 Can we circumvent censorship systems? If so, how?
@@ -112,19 +111,19 @@ As we discussed above, we note that some entity is performing censorship - censo
 Can we define an adversary and model their censorship systems?
 \end{question}
 
-Previous work has spent significant time defining adversaries in order to posit new methods of circumvention, and we define our adversary in a similar fashion. Our adversary has unlimited resources, constrained only by physics and algorithmic limitations.\footnote{\emph{See} \ref{adversary} for our full definition and further discussion.} In our model, we also assume there is at least 1 location \emph{not} under the control of any censoring adversary.[XREF sphere of influence] Our theoretical adversary is informed by both real world observations and theories developed in prior work. In the real world, we frequently see adversaries perform basic censorship actions, such as blocking IPs and DNS resolutions. We also see adversaries taking more extreme actions, such as performing fingerprinting attacks or other techniques involving deep packet inspection (DPI).\footnote{\emph{See} \ref{real} for our exploration of real-world adversaries.} In theory, we see formulations that involved the adversary either attacking specific protocols [TODO e.g. xref Wang discussion] or employing a specific technique of attack applicable to several systems. [TODO: xref Salmon discussion] In prior work, most adversarial actions are discussed in a vacuum - rather than looking at how an adversary may choose the full setup of a censorship suite, adversary modelling focuses on an adversary trying to tackle just one method of circumvention, and the broader picture is ignored. We formulate a model for evaluating an adversaries actions that looks at the \emph{whole} of their censorship apparatus:\footnote{\emph{See} \ref{theory} for more details and the derivation.}
+Previous work has spent significant time defining adversaries in order to posit new methods of circumvention, and we define our adversary in a similar fashion. Our adversary has unlimited resources, constrained only by physics and algorithmic limitations.\footnote{\emph{See} \ref{adversary} for our full definition and further discussion.} In our model, we also assume there is at least 1 location \emph{not} under the control of any censoring adversary.[XREF sphere of influence] Our theoretical adversary is informed by both real world observations and theories developed in prior work. In prior work, most adversarial models are highly focused - rather than looking at how an adversary may choose the full setup of a censorship suite, adversary modelling focuses on an adversary trying to tackle just one method of circumvention, and the broader picture is ignored. We formulate a model for evaluating an adversaries actions that looks at the \emph{whole} of their censorship apparatus:\footnote{\emph{See} \ref{theory} for more details and the derivation.}
 
 \begin{equation}
 [TODO: insert the final equation after cleaning notation]
 \end{equation}
 
-This model of an adversary is a novel contribution and allows for rooting research in the field to both existing theory and the real world. With an adversary and model defined, we can further refine the key research question tackled in this paper:
+This model of an adversary is a novel contribution and allows for rooting research in the field to both the real world and existing theory. With an adversary and model defined, we can further refine the key research question tackled in this paper:
 
 \begin{keyq}
-Can we circumvent our adversaries censorship systems?
+Can we circumvent our adversary's censorship systems? If so, how?
 \end{keyq}
 
-We cannot immediately answer this question - as we see in our model, an adversary has some utility function. We start by bounding our potential utility functions with one of the [edge possibilites]: Consider a utility function where an adversary does not care about blocking access to sites they deem legitimate (i.e., blocking an allowed site has a utility to the adversary of $0$), but they strongly do not want anyone to access a non-legitimate site (i.e. a user accessing a non-legitimate site has a utility of $-\infty$). This adversary would simply shut down \emph{all} traffic. This would provide them with $0$ utility, which is their maximal utility. In fact, in some instances censors have had real-world utility functions that result in actions like this, though those instances have been short lived.[CITE] However, in practice, we also see that no censor has continually provided 0 internet access - indicating that real world adversaries place a non-zero value on allowing access to legitimate sites, but they might place a very negative value on some non-legitimate sites. While we can come up with infinite theoretical utility functions, we should focus on real and realistically possible utility functions, leading us to another research question:
+We cannot immediately answer this question - as we see in our model, an adversary has some utility function. We start by bounding our potential utility functions with one of the [edge possibilites]: Consider a utility function where an adversary does not care about blocking access to sites they deem legitimate (i.e., blocking an allowed site has a utility to the adversary of $0$), but they feel strongly that no user should access a non-legitimate site (i.e. a user accessing a non-legitimate site has a utility of $-\infty$). This adversary would simply shut down \emph{all} traffic. This would provide them with $0$ utility, which is their maximal utility. In fact, in some instances censors have had real-world utility functions that result in actions like this, though those instances have been short lived.[CITE] However, in practice, we also see that no censor has continually provided 0 internet access - indicating that real world adversaries place a positive, non-zero value on allowing access to legitimate sites, even if they place a very negative value on some non-legitimate sites. While we can come up with infinite theoretical utility functions, we should focus on real and realistically possible utility functions, leading us to another research question:
 
 \begin{question}
 What does a realistic utility function look like for a censor?
@@ -133,42 +132,43 @@ What does a realistic utility function look like for a censor?
 We rely on looking at previous work focusing on real world adversaries to tackle this question, as well as novel contemporary observations. We find that most censors, in most circumstances, wish to censor users while providing access to acceptable sites. We also see that censors frequently fail to block some traffic that they could block using known methods. This brings us to the key concept of \emph{collateral damage}.[TODO: xref] A censor can employ censorship techniques to stop some traffic that they wish to stop, [but many methods of censorship would result in shutting down access to some allowed traffic]. We see several real world adversaries each employ unique censorship systems with varying degrees of collateral damage. [TODO: Add a bit more] As such, we refine our key research question:
 
 \begin{keyq}
-Can we circumvent our adversaries censorship system, given a realistic adversarial utility function?
+Can we circumvent our adversaries censorship system, given a realistic adversarial utility function? If so, how?
 \end{keyq}
 
-First, if we \emph{only} look at \emph{current} censorship apparatuses and real-world adversarial utility functions, we could conclude and say yes - based entirely on previous work. In practice, we see that the circumvention system Snowflake is currently working under all adversaries. However, adversaries \emph{do} change their utility functions, and new censorship systems arise. Adversaries are trying to develop new systems, and so we cannot assume a system will function as well as it does currently indefinitely.\footnote{We note that a circumvention system which is provably able to survive could arise, however existing tools either do not have a strong scientific proof (e.g. Snowflake [XREF]) or proofs are frequently constrained to such an extent that they work in theory, but neglect an attack outside of the scope of that theory (e.g. Obfs and the bridge distribution problem [XREF]).} We look ahead to a potential adversary either adopting a different utility function with a higher toleracne for collateral damage or the development of a new censorship system that is more optimal than currently deployed systems. This leads us to our next research question:
+First, if we \emph{only} look at \emph{current} censorship apparatuses and real-world adversarial utility functions, we could conclude and say yes - based entirely on previous work. In practice, we see that the circumvention system Snowflake is currently working under all real-world adversaries. However, adversaries \emph{do} change their utility functions, and new censorship systems arise. Adversaries are trying to develop new systems, and so we cannot assume a system will function as well as it does currently indefinitely.\footnote{We note that a circumvention system which is provably able to survive could arise, however existing tools either do not have a strong scientific proof (e.g. Snowflake [XREF]) or proofs are frequently constrained to such an extent that they work in theory, but neglect an attack outside of the scope of that theory (e.g. Obfs and the bridge distribution problem [XREF]).} We look ahead to a potential adversary either adopting a different utility function with a higher tolerance for collateral damage or the development of a new censorship system that is more optimal than currently deployed systems. This leads us to our next research question:
 
 \begin{question}
 What might censorship look like in the near future?
 \end{question}
 
-We review related work and synthesize some possibilities for actions an adversary may take in the future. We focus on currently successful circumvention techniques, and provide some methods of censorship an adversary may engage in to further restrict these systems using existing techniques that might increase collateral damage. We also explore censorship techniques, and we observe that deep packet inspection and bridge enumeration are the two broad techniques an adversary may use in a more advanced censorship system. We discuss some directions that these techniques may proceed in. [TODO: More] We use this to refine our overarching research question into an approachable question:
+We review related work and synthesize some possibilities for actions an adversary may take in the future. We focus on currently successful circumvention techniques, and provide some methods of censorship an adversary may engage in to further restrict these systems using existing techniques that might increase collateral damage. We also explore censorship techniques, and we observe that deep packet inspection and bridge enumeration are the two broad techniques an adversary may use in a more advanced censorship system. We discuss some directions that these techniques may proceed in. [TODO: More + be more concrete] We use this to refine our overarching research question into an approachable question:
 
 \begin{question}
-Can we circumvent our adversaries existing or potential censorship systems, given a realistic adversarial utility function?
+Can we circumvent our adversaries existing or potential censorship systems, given a realistic adversarial utility function? If so, how?
 \end{question}
 
 We address this by combining several observations which result from the answers to our previous questions:
 \begin{itemize}
   \item A realistic censorship system should be based upon \emph{real} censorship systems and \emph{real} adversaries, with some further constraining beyond real-world adversaries allowed.
-  \item Circumvention systems that thwart real censorship systems exist both in theory and the real world, but that some functional systems \emph{primarily} exist in theory.
+  \item Circumvention systems that thwart real censorship systems exist both in theory and the real world, but some functional systems \emph{primarily} exist in theory.
     \begin{itemize}
     \item There must be some limitation(s) to systems that only exist in theory.
-    \item Real world circumvention systems function by combining a bootstrapping channel and a circumvention channel.
-      \begin{itemize}
-      \item We see that bootstrapping is generally done using a high value channel that has reasonable latency, but may have low bandwidth.
-      \item We see that the circumvention channels must have reasonable latency \emph{and} bandwidth.
-      \end{itemize}
+    \item The practicality of real-world systems is crucial.
+    \end{itemize}
+  \item Circumvention systems function by combining a bootstrapping channel and a circumvention channel.
+    \begin{itemize}
+    \item We see that successful bootstrapping is generally done using a high value channel that has reasonable latency, but may have low bandwidth.
+    \item We see that the circumvention channels that are used in the real world must have reasonable latency \emph{and} bandwidth.
     \end{itemize}
 \end{itemize}
 We build our system based upon the following principles derived from those observations:
 \begin{itemize}
-  \item A novel circumvention system must be functional.
+  \item A novel circumvention system should be functional.
     \begin{itemize}
     \item Functional means both not blocked, and having practical latency and bandwidth.
     \item The system must function both when bootstrapping and relaying traffic.
     \end{itemize}
-  \item A novel circumvention system must improve upon an existing system in at least one of the following ways:
+  \item A novel circumvention system should improve upon an existing system in at least one of the following ways:
     \begin{itemize}
     \item Increase collateral damage\footnote{This also includes using a novel method of circumvention, though that is not required - a system may be iterative.}
     \item Scalability
@@ -182,12 +182,12 @@ We choose to build a system that iterates on the success of Snowflake. We do thi
 \begin{itemize}
   \item Increase collateral damage
     \begin{itemize}
-    \item As a P2P system, adversaries need to perform censorship solely at international gateways, but they must also expand their censorship apparatus to cover intranational traffic as well. This drastically increases collateral damage, as adversaries have not been observed performing notable on-the-wire censorship within their borders. Adding intranational censorship will take any collateral damage that would have occurred solely to international endpoints and expands that to intranational end points as well.
-    \item We use IPFS as a library for our channel, and any blocking of our system would result in blockking IPFS as well, blocking a protocol that is in use across the globe.
+    \item In existing systems, adversaries need to perform censorship solely at international gateways, but our system requires them to expand their censorship apparatus to cover intranational traffic as well. This drastically increases collateral damage, as adversaries have not been observed performing notable on-the-wire censorship within their borders. Adding intranational censorship will take any collateral damage that would have occurred solely to international endpoints and expands that to intranational end points as well.[TODO: mention/cite that most traffic is intranational]
+    \item We use IPFS as a library for our channel, and any blocking of our system would result in blocking IPFS as well, blocking a protocol that is in use across the globe.
     \end{itemize}
   \item Scalability
     \begin{itemize}
-    \item Snowflake is entirely volunteer run, and has encountered scalability issues in the real world in the last year as a result. There is some evidence that the volunteer base is largely saturated, and growing the network further is difficult. We address this by having every user of our network \emph{also} act as a provider of our network. This means that each node in our network does not solely drain system bandwidth, instead they use some bandwidth and also provide some bandwidth.\footnote{A user may provide more bandwidth than they use, however, an exploration of average users of our network would require numerous real users.}
+    \item Snowflake is entirely volunteer run, and has encountered scalability issues in the real world in the last year as a result. There is some evidence that the volunteer base is largely saturated, and growing the network further is difficult. We address this by having every user of our network \emph{also} act as a provider of our network. This means that each node in our network does not solely drain system bandwidth, instead they use some bandwidth and also provide some bandwidth.\footnote{A user may provide more bandwidth than they use, however, an exploration of the bandwidth provided vs the bandwidth used of users of our network would require numerous real users.}
     \end{itemize}
   \item Usability
     \begin{itemize}
@@ -197,7 +197,7 @@ We choose to build a system that iterates on the success of Snowflake. We do thi
 \end{itemize}
 [END TODO: If any of these remain single bullet points, switch to `ITEM: TEXT` instead of nested lists]
 
-In practical terms, we build a system by using LibP2P and IPFS as libraries, and building a dynamically updating tree which contains metadata and pointers to hashes of files - which can then be retrieved over IPFS. We also outline some attacks a censor may take against IPFS, and we modify our usage of IPFS to mitigate these attacks. We build both golang and python libraries which are used to access and update the aformentioned tree, as well as to establish uplink channels. We build a benchmarking app on top of our network, as well as some demo apps [TODO: list final apps].
+In practical terms, we build a system by using LibP2P and IPFS as libraries, and building a dynamically updating tree which contains metadata and pointers to hashes of files - which can then be retrieved over IPFS. We also outline some attacks a censor may take against IPFS, and we modify our usage of IPFS to mitigate these attacks. We build both Golang and Javascript libraries which are used to access and update the aformentioned tree, as well as to establish uplink channels. We build a benchmarking app on top of our network, as well as some demo apps [TODO: list final apps].
 
 We then use our benchmarking app to demonstrate how our system works in a variety of conditions, based upon some of the potential actions a censor may take:
 \begin{itemize}
@@ -206,7 +206,7 @@ We then use our benchmarking app to demonstrate how our system works in a variet
   \item Censoring fixed nodes \emph{and} all traffic except WebRTC and email.
 \end{itemize}
 
-The second test is in line with how adversaries currently function in the real world, and the third test posits an adversary which has a utility function more extreme than existing adversaries. We note that we do not spend extensive time looking at DPI attacks on WebRTC - this is because these are generally fingerprinting attacks, and because we use the built in WebRTC from standard web browsers, there should not be any fingerprint distinct from standard usage of WebRTC.\footnote{An adversary may perform \emph{content} fingerprinting attacks, however, we relegate these attacks to future work, and note that adversaries do not appear to do these in practice, and they have false positive rates too high for usage. [CITE] [XREF false positives]}
+The second test is in line with how adversaries currently function in the real world, and the third test posits an adversary which has a utility function more extreme than existing adversaries. We note that we do not spend extensive time looking at DPI attacks on WebRTC - this is because these are generally fingerprinting attacks, and because we use the built in WebRTC from standard web browsers, there should not be any fingerprint distinct from standard usage of WebRTC.\footnote{An adversary may perform \emph{content} fingerprinting attacks, however, we relegate these attacks to future work, and note that adversaries do not appear to do these in practice in the realm of censorship, and they have false positive rates too high for usage. [CITE] [XREF false positives]}
 
 [TODO: Explore speed results]
 
@@ -214,6 +214,7 @@ We then conclude and offer a discussion on ethics of our system and potential fu
 
 [END TODO: Check paragraph indentation]
 [END TODO: Add xrefs throughout]
+[END TODO: Add cites throughout]
 
 \chapter{Background}
 
