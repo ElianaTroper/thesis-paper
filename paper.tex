@@ -314,31 +314,33 @@ At this point, those who used and built the anonymity software recognized that c
 
 \subsection{Current theory of censorship circumvention}
 
-[TODO: Rework]
-
-Present censorship circumvention is currently built on two techniques: proxying traffic \emph{out} of the adversaries sphere of influence, and providing access to those proxies. If you can provide access to a proxy, then using existing proxying technology is trivial. The majority of censorship circumvention theory is, therefore, focused on providing access to proxies.
+[TODO: Maybe cut? Or just point to next section]
 
 The bedrock of the theory underlying successful provision of access to proxies is collateral damage.
 
 [TODO: Discuss collateral damage more]
 
-\section{Prior techniques}
+\chapter{Related Work}
+
+Censorship circumvention has developped over several decades. Originating out of anonymity research, censorship resistance is a less difficult problem than full anonymity,\footnote{Anonymity generally requires censorship resistance (or a non-censoring adversary) to bootstrap.} and has become a topic studied on it's own independent of anonymity.\footnote{Though anonymity and censorship are distinct problems and are often approached independently in research, there is notable interaction between the two fields - many censorship circumvention techniques target the pluggable transport (PT) spec for deployment of censorship systems. The original PT spec was made for Tor, an anonymity network and protocol,\cite{tor} though later iterations of the spec are more general and are in use by tools including Tor, Lantern, and Psiphon.\cite{pt} In practice, current functional real world techniques all use the PT spec - see \ref{obfs} and \ref{snowflake} for details.} Censorship circumvention generally looks at one of two problems: proxying traffic \emph{out} of an adversaries sphere of influence, and providing access to those proxies to those within an adversaries sphere of influence.
+
+[TODO: Add in new paper re: obfs]
+
+\section{Prior proxying theory and techniques}
+
+Most proxying techniques fall into one of three broad categories: looking like an unknown protocol, mimicing an existing protocol, or using an existing protocol as intended. Of these, mimicry was eliminated as a functional technique. Houmansadr et al established requirements that a mimicry system must meet to succeed - the imitated protocol must be mimiced in full, the imitation protocol must react properly to errors and network conditions, the imitation protocol must have traffic typical of the imitated protocol, and the imitation protocol must imitate artifacts from implementations of the imitated protocol properly.\cite{parrot} They continued by showing that none of the cutting edge mimicry protocols of the time were able to fulfill these requirements.\footnote{The authors explore SkypeMorph, StegoTorus, and CensorSpoofer - they quickly find passive attacks for these transports.\cite{skypemorph}\cite{stegotorus}\cite{censorspoofer}\cite{parrot}} The authors finally show that even with the initial attacks they find, hypothetical, improved transports that patch those would still fail as there are attacks that could not be prevented when imitating a proprietary protocol. The authors have a damning conclusion that has held until today: "unobservability by imitation is a fundamentally flawed approach, unlikely to ever suceed due to the daunting list of reqirements that an imitator must satisfy. The failure of all proposed [imitation] circumvention systems to achiever unobservability confirms this conclusion."\cite{parrot}
+
+[TODO: Break down into high bandwidth/low bandwidth]
 
 [TODO: For each of these be sure to mention if they work IRL]
 
-[TODO: Mention parrot is dead]
-
 TODO
-
-[TODO: Mention Tor PTs independently of specific methods]
 
 [TODO: Do mention some things like shadowsocks that are in use but are even further from academics]
 
-[TODO: Mention stego]
-
 [TODO: Discuss fingerprinting, including contemporary examples w/ snowflake]
 
-\subsection{[Point to point obfuscation]}
+\subsection{Unknown Protocols}
 
 TODO
 
@@ -365,6 +367,8 @@ TODO
 TODO
 
 \subsection{High-reliability channels}
+
+[TODO: Mention stego]
 
 TODO
 
