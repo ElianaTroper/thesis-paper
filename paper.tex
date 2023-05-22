@@ -322,7 +322,7 @@ The bedrock of the theory underlying successful provision of access to proxies i
 
 \chapter{Related Work}
 
-Censorship circumvention has developped over several decades. Originating out of anonymity research, censorship resistance is a less difficult problem than full anonymity,\footnote{Anonymity generally requires censorship resistance (or a non-censoring adversary) to bootstrap.} and has become a topic studied on it's own independent of anonymity.\footnote{Though anonymity and censorship are distinct problems and are often approached independently in research, there is notable interaction between the two fields - many censorship circumvention techniques target the pluggable transport (PT) spec for deployment of censorship systems. The original PT spec was made for Tor, an anonymity network and protocol,\cite{tor} though later iterations of the spec are more general and are in use by tools including Tor, Lantern, and Psiphon.\cite{pt} In practice, current functional real world techniques all use the PT spec - see \ref{obfs} and \ref{snowflake} for details.} Censorship circumvention generally looks at one of two problems: proxying traffic \emph{out} of an adversaries sphere of influence, and providing access to those proxies to those within an adversaries sphere of influence.
+Censorship circumvention has developped over several decades. Originating out of anonymity research, censorship resistance is a less difficult problem than full anonymity,\footnote{Anonymity generally requires censorship resistance (or a non-censoring adversary) to bootstrap.} and has become a topic studied on it's own independent of anonymity.\footnote{Though anonymity and censorship are distinct problems and are often approached independently in research, there is notable interaction between the two fields - many censorship circumvention techniques target the pluggable transport (PT) spec for deployment of censorship systems. The original PT spec was made for Tor, an anonymity network and protocol,\cite{tor} though later iterations of the spec are more general and are in use by tools including Tor, Lantern, and Psiphon.\label{pt}\cite{pt} In practice, current functional real world techniques all use the PT spec - see \ref{obfs} and \ref{snowflake} for details.} Censorship circumvention generally looks at one of two problems: proxying traffic \emph{out} of an adversaries sphere of influence, and providing access to those proxies to those within an adversaries sphere of influence.
 
 [TODO: Add in new paper re: obfs]
 
@@ -331,9 +331,13 @@ Censorship circumvention has developped over several decades. Originating out of
 
 Most proxying techniques fall into one of three broad categories: looking like an unknown protocol, mimicing an existing protocol/service, or using an existing protocol/service as intended. Of these, mimicry was eliminated as a functional technique. Houmansadr et al established requirements that a mimicry system must meet to succeed - the imitated protocol must be mimiced in full, the imitation protocol must react properly to errors and network conditions, the imitation protocol must have traffic typical of the imitated protocol, and the imitation protocol must imitate artifacts from implementations of the imitated protocol properly.\cite{parrot} They continued by showing that none of the cutting edge mimicry protocols of the time were able to fulfill these requirements.\footnote{The authors explore SkypeMorph, StegoTorus, and CensorSpoofer - they quickly find passive attacks for these transports.\cite{skypemorph}\cite{stegotorus}\cite{censorspoofer}\cite{parrot}} The authors finally show that even with the initial attacks they find, hypothetical, improved transports that patch those would still fail as there are attacks that could not be prevented when imitating a proprietary protocol. The authors have a damning conclusion that has held until today: "unobservability by imitation is a fundamentally flawed approach, unlikely to ever suceed due to the daunting list of reqirements that an imitator must satisfy. The failure of all proposed [imitation] circumvention systems to achiever unobservability confirms this conclusion."\cite{parrot}
 
-Beyond mimicry, most systems fall into either looking like an unkown protocol, or using an existing protocol as intended. We can also break down proxying techniques into low-bandwidth and high-bandwidth techniques. High-bandwidth, on it's own, is generally preferred to lower bandwidth, however, in censorship circumvention other tradeoffs exist - most notably, the cost of censoring many low-bandwidth channels is higher than many high bandwidth channels. These channels frequently use an existing protocol/service as intended, which means that censoring these channels may require taking down a high value service, e.g. if a circumvention system uses email effectively, it may only be possible to block by blocking email. We discuss several examples of both low and high bandwidth channels in the following sections. [TODO: Discuss the notion of signalling]
+Beyond mimicry, most systems fall into either looking like an unkown protocol, or using an existing protocol as intended. We can also break down proxying techniques into low-bandwidth and high-bandwidth techniques. High-bandwidth, on it's own, is generally preferred to lower bandwidth, however, in censorship circumvention other tradeoffs exist - most notably, the cost of censoring many low-bandwidth channels is higher than many high bandwidth channels. These channels frequently use an existing protocol/service as intended, which means that censoring these channels may require taking down a high value service, e.g. if a circumvention system uses email effectively, it may only be possible to block by blocking email. We discuss several examples of both low and high bandwidth channels in the following sections.
+
+Lower and higher bandwidth transports can be combined to work together and gain benefits of both. Most higher-bandwidth channels require conveying some less-fixed \emph{out-of-band} information (e.g. an IP address) to use a higher bandwidth channel. Low bandwidth channels, generally being more costly to block, still require out-of-band information, but frequently this information is valid as long as the channel is functional. For example, an email-based channel will require a recipient email address, but this email address could be effectively constant due to the way email itself functions. As a result, an email based channel may effectively hard-code this information in the transport itself, allowing the channel to be used as long as you have the code and an adversary that does not block email. This highly resiliant but low-bandwidth setup may be used to bootstrap higher bandwidth channels. An email channel may be used to convey an IP address of a point to point high bandwidth channel, and could be used for important messages or to get another channel if the recieved point-to-point channel is blocked. With this synergy between the low and high bandwidth channels, discussing and understanding both is crucial to a modern circumvention system.
 
 [TODO: Discuss DPI, xref real world section]
+
+[TODO: Discuss IP blocking]
 
 [TODO: Discuss fingerprinting, including contemporary examples w/ snowflake]
 
@@ -341,9 +345,11 @@ Beyond mimicry, most systems fall into either looking like an unkown protocol, o
 
 [TODO: Do mention some things like shadowsocks that are in use but are even further from academics]
 
+[TODO: Discuss false positives and base-rate fallacy]
+
 \subsection{High-bandwidth channels}
 
-Several high-bandwidth channels have been created, and at least two are in active use in real world situations. We first discuss channels that attempt to look like an unknown protocol, and then discuss ones that attempt to use existing protocols and services as intended.
+Several high-bandwidth channels have been created, and at least two are in active use in real world situations. We first discuss channels that attempt to look like an unknown protocol (UP), and then discuss ones that properly use protocols (PUP).
 
 \subsubsection{Unknown protocols}
 
@@ -353,19 +359,22 @@ obfs3 was developped to patch issues with obfs2. The main issue it addressed was
 
 Scramblesuit performed some evaluation, however, they identified a key problem with evaluating circumvention techniques that affects all protocols that attempt to look like unknown protocols: evaluation is very difficult due to the lack of good datasets and effective experimental setups. The authors opted to show that the transport differs from the carried protocol (in this case, Tor).\cite{scramblesuit} Regardless, Scramblesuit became widely deployed.\footnote{Notably, inter-arrival time manipulation was off by default and could optionally be turned on. This was because inter-arrival time manipulation introduced significant overhead. With hindsight, we have seen other issues with Scramblesuit and have not seen issues caused by inter-arrival time manipulation being disable. These other issues are discussed directly below.}
 
-Scramblesuit had notable overhead from it's andshake phases. The UniformDH used modlar exponentiation, which is an expensive operation.\cite{obfs4} Additionally, Scramblesuit was vulnerable to some MitM attacks if the attacker knew the shared secret.\cite{obfs4} obfs4 replaced the UniformDH with use of Tor's ntor handshake, with obfuscation done by Elligator 2.\cite{obfs4} obfs4 is still in use today, and is one of the main two circumvention techniques used for circumventing censorship in the Tor browser.
+Scramblesuit had notable overhead from it's handshake phases. The UniformDH used modular exponentiation, which is an expensive operation.\cite{obfs4} Additionally, Scramblesuit was vulnerable to some MitM attacks if the attacker knew the shared secret.\cite{obfs4} obfs4 replaced the UniformDH with use of Tor's ntor handshake, with obfuscation done by Elligator 2.\cite{obfs4} obfs4 is still in use today, and is one of the main two circumvention techniques used for circumventing censorship in the Tor browser. [TODO: cite] obfs4 requires some out of band info to function - which is done through hard-coding, email, telegram, or domain fronting. [TODO: xref]
 
-[TODO: Wang et al, new censorship]
+Even though obfs4 is still functional and in use, that does not mean it is not vulnerable to attack. Wang et al demonstrated that obfs4 is vulnerable to entropy based attacks: conventional and often used web protocols, even if encrypted, usually have some control messages unencrypted - e.g. TLS and SSH both have unencrypted portions of the header. This means that the entropy of these flows is lower than that of obfs4 flows - because obfs4 attempts to look-like-nothing, it ends up looking like a fully encrypted stream with no plaintext, resulting in very high entropy - but, no well known protocol does this. By attempting to look like a hypothetical unknown protocol, obfs4 may actually look unique.\cite{wang} Obfs4 can be reliably detected and blocked as a result, with relatively low computational costs. There are some drawbacks to this - most notably the base-rate fallacy, discussed in Section \ref{base-rate}. This paper was published in 2015, though for over 5 years this attack was not observed by any adversaries. In 2021, these attacks were observed on the live internet, discussed further in Section \ref{entropy}.
+
+Obfs4 also faces another problem: the bridge distribution problem, discussed further in Section \ref{bridge}. Bridges, once known by an adversary, can be blocked at the IP level, and the software is difficult for basic users to spin up. Some of these issues are addressed by Snowflake in Section \ref{snowflake}.
 
 [TODO: Others]
 
-\subsection{[P2P and P2P-like]}
+\subsection{Properly using protocols}
 
-TODO
+Several transports attempt to use protocols as intended. Snowflake is in real world usage, and several others have been developed in the literature.
 
 \subsubsection{Snowflake}
+\label{snowflake}
 
-TODO
+Snowflake is a transport designed for usage by the Tor browser,\footnote{Though, it conforms to the PT spec spec, and as such could be used by other systems. See Section \ref{PT} for more on PTs.} and is currently in use in the real world. Snowflake seeks to offer an alternative way of spinning up proxies compare to obfs and other transports that rely on proxies with fixed IP addresses, as well as using a different transport. Snowflake does this by taking advantage of how modern browsers are setup to ease proxy deployment and transport development. These concepts were introduced by Flashproxy and other related work. Flashproxy defined three key problems that this class of transport must address: how to create proxies, how to rendezvous, and how to actually hide when in use.\cite{flashproxy} Flashproxy addresses proxy creation by allowing volunteers to embed code in their sites that turn any visitor into a proxy for censored users. These proxies are ephemeral, and are regular web users, changing up the cost and benefits a censor reaps if they were to be blocked. Rendezvous is handled by setting up a well-known connection broker. Hiding in use is not explored deeply, but is justified by simply using a frequently used web browser transport (WebSockets).
 
 [TODO: Add a diagram which will be used later to start to show "modifications" from the snowflake model to get our system]
 
@@ -374,6 +383,10 @@ TODO
 \subsubsection{MassBrowser}
 
 TODO
+
+\subsubsection{Decoy routing}
+
+[Tapdance]
 
 \subsection{High-reliability channels}
 
@@ -389,12 +402,6 @@ TODO
 
 [TODO: Mention this w/ sweet, raven, bridgedb, etc]
 
-\subsection{Decoy routing}
-
-TODO
-
-\subsubsection{Tapdance}
-
 \subsection{Tunneling and realistic behavior}
 
 \subsubsection{Raven}
@@ -403,6 +410,8 @@ TODO
 \label{real}
 
 [TODO - a bunch of case studies]
+
+[https://gfw.report/publications/usenixsecurity23/data/paper/paper.pdf]
 
 [TODO: Important to hit: recent OBFS entropy attack, Iran study that shows slowdown, China, DNS/IP censorship, DNSSEC failure]
 
