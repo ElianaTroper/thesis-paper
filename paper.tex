@@ -365,7 +365,7 @@ Even though obfs4 is still functional and in use, that does not mean it is not v
 
 Obfs4 also faces another problem: the bridge distribution problem, discussed further in Section \ref{bridge}. Bridges, once known by an adversary, can be blocked at the IP level, and the software is difficult for basic users to spin up. Some of these issues are addressed by Snowflake in Section \ref{snowflake}.
 
-[TODO: Others]
+[TODO: Others?]
 
 \subsection{Properly using protocols}
 
@@ -376,35 +376,36 @@ Several transports attempt to use protocols as intended. Snowflake is in real wo
 
 Snowflake is a transport designed for usage by the Tor browser,\footnote{Though, it conforms to the PT spec spec, and as such could be used by other systems. See Section \ref{PT} for more on PTs.} and is currently in use in the real world. Snowflake seeks to offer an alternative way of spinning up proxies compare to obfs and other transports that rely on proxies with fixed IP addresses, as well as using a different transport. Snowflake does this by taking advantage of how modern browsers are setup to ease proxy deployment and transport development. These concepts were introduced by Flashproxy and other related work. Flashproxy defined three key problems that this class of transport must address: how to create proxies, how to rendezvous, and how to actually hide when in use.\cite{flashproxy} Flashproxy addresses proxy creation by allowing volunteers to embed code in their sites that turn any visitor into a proxy for censored users. These proxies are ephemeral, and are regular web users, changing up the cost and benefits a censor reaps if they were to be blocked. Rendezvous is handled by setting up a well-known connection broker. Hiding in use is not explored deeply, but is justified by simply using a frequently used web browser transport (WebSockets).
 
+Snowflake took the concepts presented in Flashproxy and iterated on them and deployed them widely. Snowflake switched the transport in use from Websockets to WebRTC.\footnote{WebRTC is a commonly used standard across a variety of digital applications. Notably, it is supported in the web browser via Javascript. WebRTC is used for a variety of tasks, including video, audio, and other data, and is used by most video/audio chatting applications.} WebRTC was designed for P2P usage, and an ecosystem of utility protocols and standards has arisen around it, including tools to do NAT puncturing and establishing connections between users in various, differing networks, which provides significant utility to Snowflake compared to Websockets.\footnote{Snowflake uses Interactive Connectivity Establishment (ICE) to connect users behind NATs. ICE uses STUN and TURN relays as tools to ensure a connection can be established. STUN is commonly used and is available widely on the web, and is required for innocuous services to function as well. TURN services are less common, as they require significantly more infrastructure and are not generally permissionless like STUN.\cite{snowflake-tech}} Snowflake iterated on the rendezvous by creating a broker. The broker is reached by using a high-reliability, low-bandwidth channel (domain fronting in practice, see Section \ref{domain fronting} for further details). The broker is able to match volunteers and users to each other, in order to provide service. Snowflake then makes several usability improvements, setting up usage such that a client can fail over to a backup volunteer should their primary one fail, as well as maintaining a session across numerous volunteers using Turbotunnel.\footnote{Turbotunnel is a concept most completely implemented in Snowflake. It is a session/reliability layer that exists above an obfuscation layer.\cite{turbotunnel} Many transports exist above a reliability layer (e.g. obfs4 uses TCP), so adding an additional reliablilty layer adds notable overhead. In some cases, such as Snowflake, where the transports used are very unreliable, the benefits outweigh the costs. Turbotunnel also addresses several other issues - for example, a censor could close any long-running connections to disable obfs4.\cite{turbotunnel} Without any internal reliability layer, the connection must restart from scratch, effectively preventing usage of the transport, even if an adversary did not identify a specific bridge.}
+
 [TODO: Add a diagram which will be used later to start to show "modifications" from the snowflake model to get our system]
 
 [TODO: Iran case study to highlight scalability]
 
-\subsubsection{MassBrowser}
-
-TODO
-
 \subsubsection{Decoy routing}
 
-[Tapdance]
+[TODO: Tapdance] [TODO: Cirripede] [TODO: Telex]
+
+\subsubsection{MassBrowser}
 
 \subsection{High-reliability channels}
 
-[TODO: Mention stego]
-
-TODO
+Most of the previously mentioned channels require either a shared secret (e.g. obfs4) or a rendezvous (e.g. snowflake). Distributing a secret or setting up a rendezvous cannot be punted indefinitely, and as such there must be a way to perform these actions, even in a censored region. High-reliability channels may be used for these actions. Though all high-reliability channels vary in numerous ways, they can generally be characterized as low-bandwidth, highly available, and sticky addresses. Each of these characteristics is important for differing reasons. Most of these channels are considered low-bandwidth - were they not, we could simply use the channel as the primary transport.\footnote{And, this can still be done, see section \ref{meek} for some discussion of using one for a full connection.} A channel must be highly available, or it could not be relied upon. Finally, sticky addresses (e.g. an email address, a social media handle) are important, as a more temporary address would leave us punting on distributing a secret or setting up a rendezvous channel - a sticky address allows one (or several) addresses to be hard-coded in a transports default config for the long run, allowing for usage without acquiring more info out-of-band.
 
 \subsubsection{Domain fronting}
+\label{domain fronting}
 
 TODO
 
 \subsubsection{Email}
 
+[Raven] [Sweet]
+
 [TODO: Mention this w/ sweet, raven, bridgedb, etc]
 
-\subsection{Tunneling and realistic behavior}
+\subsubsection{Steganography}
 
-\subsubsection{Raven}
+\subsubsection{Realistic behavior}
 
 \section{Real world observations}
 \label{real}
