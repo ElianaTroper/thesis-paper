@@ -382,11 +382,23 @@ Snowflake took the concepts presented in Flashproxy and iterated on them and dep
 
 [TODO: Iran case study to highlight scalability]
 
+[TODO: add stuff on bridge enumeration]
+
 \subsubsection{Decoy routing}
 
 [TODO: Tapdance] [TODO: Cirripede] [TODO: Telex]
 
+\subsubsection{CacheBrowsing}
+
+[TODO: Discuss cachebrowser]
+
 \subsubsection{MassBrowser}
+
+Massbrowser is a P2P circumvention system. Massbrowser was designed to address flaws of existing systems - specifically, that systems that rely on limited, well known bridges (such as obfs4) are easily blocked, [TODO: xref] certain systems are expensive (such as using domain fronting for a full web session), many systems offer poor quality of service due to poor scalability, several systems force a user to add additional overhead to their web session by using another tool such as Tor,\footnote{Many web users do not care about anonymity and would prefer simply to get around web blocks regardless of anonymity guarentees.} and many systems (particularly decoy routing) are difficult to deploy.\cite{massbrowser}
+
+Massbrowser attempts to address these flaws by relying on volunteer proxies in both censored and uncensored regions to circumvent censorship. These proxies are supposed to be regular web users. A Massbrowser session begins by connecting to a central broker (via domain fronting) to match users with a proxy. These proxies then connect (after performing NAT punching) and use a modified version of obfs to communicate.
+
+On top of this, because proxies may be in censored regions, MassBrowser maintains a complex whitelist on a per proxy basis - if a proxy is in a censored region, it cannot acquire certain content for the connected circumvention user.\footnote{MassBrowser simply tunnels through Tor in this case - creating a chicken vs egg problem.} This is costly - measurements must be performed to maintain this whitelist, and it assumes accesibility to CacheBrowser and Tor, and the maintinence of this whitelist does not benefit from economies of scale. On top of this, proxy providers may heavily tailor the loads they wish to support, employing whitelisting, destination whitelisting (which varies from the basic whitelisting behavior previously mentioned), loads, and other options.\cite{massbrowser} On top of this, MassBrowser uses custom software - either GUI software or a modified version of Firefox.
 
 \subsection{High-reliability channels}
 
@@ -395,7 +407,16 @@ Most of the previously mentioned channels require either a shared secret (e.g. o
 \subsubsection{Domain fronting}
 \label{domain fronting}
 
-TODO
+Domain fronting arose through exploiting the differences between the plaintext and encrypted portions of an HTTPS connection sequence. Though implementation varies slightly depending on the provider, at a high level domain fronting is accomplished by setting up a server behind the networks of a key piece of internet infrastructure,\footnote{Usually large providers of either direct services (e.g. Google) or CDNs (e.g. Cloudflare).} and initializing DNS and server name indication (SNI) using a whitelisted domain from that same provider. After that, the HTTP host header is set to the proper destination (as this field is encrypted by TLS, the censor is unable to see it). Domain fronting is relatively simple to setup, and does not require direct participation from the provider (though, they cannot explicitly disallow it).\cite{domain fronting} Domain fronting is used extensively, from full sessions,\cite{meek} to bootstrapping in Snowflake, or passing out of band secrets for Obfs4.
+
+Domain fronting works well for small tasks, however, domain fronting costs a significant amount of money, proportional to bandwidth and machines used, limiting it's uses for more heavyweight tasks. Additionally, while it can be setup without cooperation from providers, they may choose to disable it. Google, Cloudflare, Amazon, and others have disabled it or take actions against users performing it. Currently, Azure (Microsoft) does not block meek, and Snowflake uses both fastly and Google's AMP cache to perform signalling.
+
+https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/-/blob/main/client/README.md
+https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/blob/main/projects/common/bridges_list.meek-azure.txt
+
+[https://petsymposium.org/2015/papers/03_Fifield.pdf]
+[https://signal.org/blog/looking-back-on-the-front/]
+[https://arstechnica.com/information-technology/2018/04/google-disables-domain-fronting-capability-used-to-evade-censors/]
 
 \subsubsection{Email}
 
