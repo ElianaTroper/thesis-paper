@@ -409,7 +409,7 @@ Most of the previously mentioned channels require either a shared secret (e.g. o
 
 Domain fronting arose through exploiting the differences between the plaintext and encrypted portions of an HTTPS connection sequence. Though implementation varies slightly depending on the provider, at a high level domain fronting is accomplished by setting up a server behind the networks of a key piece of internet infrastructure,\footnote{Usually large providers of either direct services (e.g. Google) or CDNs (e.g. Cloudflare).} and initializing DNS and server name indication (SNI) using a whitelisted domain from that same provider. After that, the HTTP host header is set to the proper destination (as this field is encrypted by TLS, the censor is unable to see it). Domain fronting is relatively simple to setup, and does not require direct participation from the provider (though, they cannot explicitly disallow it).\cite{domain fronting} Domain fronting is used extensively, from full sessions,\cite{meek} to bootstrapping in Snowflake, or passing out of band secrets for Obfs4.
 
-Domain fronting works well for small tasks, however, domain fronting costs a significant amount of money, proportional to bandwidth and machines used, limiting it's uses for more heavyweight tasks. Additionally, while it can be setup without cooperation from providers, they may choose to disable it. Google, Cloudflare, Amazon, and others have disabled it or take actions against users performing it. Currently, Azure (Microsoft) does not block meek, and Snowflake uses both fastly and Google's AMP cache to perform signalling.
+Domain fronting works well for small tasks, however, domain fronting costs a significant amount of money, proportional to bandwidth and machines used, limiting it's uses for more heavyweight tasks (particularly proxying full web sessions). Additionally, while it can be setup without cooperation from providers, they may choose to disable it. Google, Cloudflare, Amazon, and others have disabled it or take actions against users performing it. Currently, Azure (Microsoft) does not block meek, and Snowflake uses both fastly and Google's AMP cache to perform signalling.
 
 https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/-/blob/main/client/README.md
 https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/blob/main/projects/common/bridges_list.meek-azure.txt
@@ -420,13 +420,23 @@ https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/blob/main/pro
 
 \subsubsection{Email}
 
-[Raven] [Sweet]
+Email has become essential to modern life in a way few other protocols have. It functions as a good channel because it is generally encrypted using TLS, and it is widely available with third party clients allowed for most major servers, including companies such as Google and Yahoo. A censor would have to block a major email provider entirely if they wanted to prevent users using it as a channel. This has been exploited by several circumvention systems, including Sweet, Raven, and Tor's Bridgedb.
 
-[TODO: Mention this w/ sweet, raven, bridgedb, etc]
+Sweet introduced the concept of channels with high availability guarentees. Sweet chooses to use email to build on the concepts presented in "The Parrot is Dead" by Housmandr et al.\cite{parrot} Using the email protocol properly is trivial to do given the wide variety of available codebases and the numerous email servers in existence on the web. Sweet tunnels a full connection via email - however, it comes with increased latencies as a result. Sweet is explicitly vulnerable to traffic analysis, as most users do not tunnel a full web connection via email.\cite{sweet}
+
+Raven introduces the concept of behavioral realism to a circumvention channel. Raven offers an exemplar implementation written using email as the transport. This was done by using the authors actual emailing patterns and machine learning to craft a realistic sending pattern for the transport. As a result, Raven suffers from being drastically slower and higher latency than Sweet, to the extent it is usable for very little besides basic signalling.\footnote{Realistic behaviour is likely necessary for more transports beyond email to remain secure against a strong adversary in the long run, however, this is an area of open research.}\cite{raven}
+
+In reality, no censors appear to be doing behavioral analysis of web traffic - however, that does not mean they could not start doing so. In reality, it's likely that email could be used in a manner more strict than Sweet and less strict than Raven for small messages correlated with a real person accessing a system - ie, when a user is actually touching their web browser, shooting off and recieving a few email might not conform to a precisely real behavior, but it might be close enough that a censor could not detect it without significant false positives causing the blocking of regular email traffic.
+
+In the real world, Tor uses email as a channel for distributing obfs4 bridges. This works to succesfully provide users with bridges, though this runs into the bridge distribution problem limiting effectiveness, discussed in \ref{distribution}.
 
 \subsubsection{Steganography}
 
-\subsubsection{Realistic behavior}
+[TODO]
+
+\subsubsection{Other channels}
+
+Tor uses telegram to distribute obfs4 bridges.\cite{telegram}
 
 \section{Real world observations}
 \label{real}
@@ -448,13 +458,26 @@ https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/blob/main/pro
 
 \section{P2P networking}
 
-TODO
+Peer to peer networking has existed since the early web, but has fallen into and out of favor over time. The web was originally envisioned as many small networks interlinking to form the full web, but as the internet developped, many services such as email, web hosting, server provision, etc. have become centralized by large companies. For example, if two users message on a site like Twitter, their messages are going to Twitter, being stored on Twitter, and passed to the recipient via Twitter, rather than directly (even if both users have no desire for Twitter to have access to the content). Generally, unless a user is delibrately using a specific P2P protocol, only select activities are augmented with P2P connections (usually voice/videochat and gaming). The most notable uses of P2P networks are torrents, some cryptocurrencies, and IPFS.
+
+BitTorrent originated in 2001.\footnote{We use torrent and BitTorrent interchangebly throughout this paper.} It was designed to make provision of common, large files more effecient. "When a file is made available using HTTP, all upload cost is placed on the hosting machine. With BitTorrent, when multiple people are downloading the same file at the same time, they upload pieces of the file to each other. This redistributes the cost of upload to downloaders, (where it is often not even metered), this making hosting a file with a potentially unlimited number of downloaders affordable."\cite{torrent} Publishers of files choose to make their file available as a torrent, where anyone with the proper software can download it.\footnote{Nowadays, even web browsers can use extensions to access torrents.\cite{webtorrent}} At launch, users would make .torrent files available - these files contained basic info about a file - the size, name, a tracker,\footnote{"Trackers are responsible for helping downloaders find each other. They speak a very simple protocol layered on top of HTTP in which a downloader sends information about what file it’s downloading, what port it’s listening on, and similar information, and the tracker responds with a list of contact information for peers which are downloading the same file."\cite{torrent}} and hashing info.\footnote{Since then, magnet links have become an option as well. These are specifically formatted links that provide the data needed to bootstrap a torrent download without pulling a file separate from the magnet link.}\cite{torrent} The original uploader must send out at least one copy of the file being shared (or it must already be distributed out of band), but after that, the file can be reconstructed from anyone sharing the torrent rather than the original provider. Users acquire peers in a random manner from trackers, ensuring robustness. Bittorrent divides files into small pieces of fixed size, which allows users to upload before a download is completed, and these pieces are known via their SHA1 hash, ensuring file integrity. Peers announce what files they have, resulting "in less than a tenth of a percent bandwidth overhead [while] reliably utiliz[ing] all available upload capacity.\cite{torrent} BitTorrent 
+
+https://support.brave.com/hc/en-us/articles/360035025231-What-extensions-are-built-into-Brave-
+https://www.bittorrent.org/bittorrentecon.pdf
+https://www.usenix.org/legacy/events/imc05/tech/full_papers/guo/guo.pdf
 
 [TODO: Torrents, Crypto, ???]
 
 \subsection{IPFS}
 
+IPFS is a P2P system where files are shared based on the content of the files, rather than URLs (uniform resource locaters). URLs point to specific locations, which may host whatever those in charge of the location choose to serve, assuming you can route to the specific location to acquire a file.\footnote{Routing to blocked content is indeed the primary problem that we seek to solve in the censorship circumvention sphere.} Users of IPFS (either directly or an app that performs content acquisition under the hood using IPFS) request specific files, based upon the hash of the files.
+
 TODO
+
+https://arxiv.org/pdf/2208.05877.pdf
+https://arxiv.org/pdf/2205.14927.pdf
+https://arxiv.org/pdf/1407.3561.pdf
+https://arxiv.org/pdf/2102.12737.pdf
 
 \chapter{Theory}
 \label{theory}
